@@ -903,15 +903,6 @@ def generate_newsletter_html(draws_by_lottery, jackpots):
                     <p style="margin: 8px 0 0 0; color: #444; font-size: 0.95em;">85-87% of actual winning tickets pass these filters: proper sum range, 2-3 odd numbers, max 1 consecutive pair. Using constraints helps eliminate clearly invalid tickets, though the improvement is modest.</p>
                 </div>
                 
-                <div style="margin-bottom: 15px; padding: 12px; background: white; border-radius: 10px; border-left: 4px solid #ff9800;">
-                    <strong style="color: #ef6c00;">⚠️ Last Draw Numbers (Limited - ~10% repeat rate)</strong>
-                    <p style="margin: 8px 0 0 0; color: #444; font-size: 0.95em;">Our testing shows only <strong>~10% of numbers repeat</strong> from the previous draw (not 35-48% as sometimes claimed). Including last draw numbers provides minimal improvement. We show them for reference but don't oversell this.</p>
-                </div>
-                
-                <div style="padding: 12px; background: white; border-radius: 10px; border-left: 4px solid #f44336;">
-                    <strong style="color: #c62828;">❌ Hot Numbers (NOT validated - ~1.0× = no improvement)</strong>
-                    <p style="margin: 8px 0 0 0; color: #444; font-size: 0.95em;">Despite popular belief, "hot numbers" from recent draws showed <strong>no improvement over random</strong> in our backtesting (1.0-1.06×). We still show them for interest, but position pools are what actually help.</p>
-                </div>
             </div>
             
             <div style="background: linear-gradient(135deg, #fff3e0 0%, #ffe0b2 100%); border: 3px solid #ff9800; border-radius: 15px; padding: 15px; margin-bottom: 20px;">
@@ -973,21 +964,7 @@ def generate_newsletter_html(draws_by_lottery, jackpots):
                 </div>
 '''
         
-        # Hot numbers and last draw
-        hot_html = ''.join([f'<span class="pool-num hot">{n}</span>' for n in hot_numbers[:8]])
-        last_html = ''.join([f'<span class="pool-num repeat">{n}</span>' for n in last_draw])
-        
         html += f'''
-                <div class="pool-section">
-                    <div class="pool-title">🔥 Hot Numbers (NOT validated - for reference only)</div>
-                    <div class="pool-numbers">{hot_html}</div>
-                </div>
-                
-                <div class="pool-section">
-                    <div class="pool-title">🔄 Last Draw Numbers (~10% repeat rate)</div>
-                    <div class="pool-numbers">{last_html}</div>
-                </div>
-                
                 <div class="methods-box">
                     <div class="methods-title">🧪 Best Methods for {config['name']}</div>
                     <div>{'  •  '.join(config['best_methods'])}</div>
