@@ -1110,6 +1110,19 @@ def generate_newsletter_html(draws_by_lottery, jackpots):
             </p>
         </div>
         
+        <div class="section" style="background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%); border: 2px solid #4CAF50; text-align: center;">
+            <h2 class="section-title" style="color: #2E7D32;">📧 Get This Newsletter Daily!</h2>
+            <p style="margin-bottom: 15px;">Subscribe to receive lottery analysis in your inbox every day at noon CT.</p>
+            <form id="subscribeForm" style="display: flex; flex-direction: column; gap: 10px; max-width: 400px; margin: 0 auto;">
+                <input type="email" id="subEmail" placeholder="Enter your email" required 
+                    style="padding: 12px 15px; border: 2px solid #4CAF50; border-radius: 8px; font-size: 16px;">
+                <button type="submit" style="background: #4CAF50; color: white; padding: 12px 20px; border: none; border-radius: 8px; font-size: 16px; cursor: pointer; font-weight: bold;">
+                    Subscribe Free 💖
+                </button>
+            </form>
+            <p id="subMessage" style="margin-top: 10px; font-weight: bold;"></p>
+        </div>
+        
         <div class="footer">
             <p>
                 <span class="heart-icon" style="width: 20px; height: 20px;"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#ff47bb"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg></span>
@@ -1243,6 +1256,30 @@ def generate_newsletter_html(draws_by_lottery, jackpots):
     updateCountdowns();
     setInterval(updateCTClock, 1000);
     setInterval(updateCountdowns, 1000);
+    
+    // Subscribe form handler
+    var subForm = document.getElementById('subscribeForm');
+    if (subForm) {{
+        subForm.addEventListener('submit', function(e) {{
+            e.preventDefault();
+            var email = document.getElementById('subEmail').value;
+            var msgEl = document.getElementById('subMessage');
+            
+            fetch('subscribe.php?action=subscribe&email=' + encodeURIComponent(email))
+                .then(function(r) {{ return r.json(); }})
+                .then(function(data) {{
+                    msgEl.textContent = data.message;
+                    msgEl.style.color = data.success ? '#2E7D32' : '#c62828';
+                    if (data.success) {{
+                        document.getElementById('subEmail').value = '';
+                    }}
+                }})
+                .catch(function() {{
+                    msgEl.textContent = 'Error - please try again';
+                    msgEl.style.color = '#c62828';
+                }});
+        }});
+    }}
     </script>
 </body>
 </html>'''

@@ -1,0 +1,47 @@
+name: Daily Newsletter Email
+
+on:
+  schedule:
+    # Run daily at noon CT (18:00 UTC)
+    - cron: '0 18 * * *'
+  workflow_dispatch:  # Allow manual trigger
+
+permissions:
+  contents: write
+
+jobs:
+  send-newsletter:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      
+      - name: Install dependencies
+        run: pip install pytz
+      
+      - name: Update lottery data
+        run: python update_data.py
+        continue-on-error: true
+      
+      - name: Generate newsletter
+        run: python generate_newsletter.py
+      
+      - name: Send to subscribers
+        env:
+          GMAIL_USER: ${{ secrets.GMAIL_USER }}
+          GMAIL_PASSWORD: ${{ secrets.GMAIL_PASSWORD }}
+        run: python send_to_subscribers.py
+      
+      - name: Commit any data changes
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add -A
+          git diff --staged --quiet || git commit -m "Newsletter sent: $(date +'%Y-%m-%d')"
+          git push || true

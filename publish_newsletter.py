@@ -47,7 +47,7 @@ CONFIG = {
         ],
         'smtp_server': 'smtp.gmail.com',
         'smtp_port': 587,
-        'sender_email': os.environ.get('GMAIL_USER', 'princessuploadie@gmail.com'),
+        'sender_email': os.environ.get('GMAIL_USER', ''),
         'sender_password': os.environ.get('GMAIL_PASSWORD', '')
     }
 }

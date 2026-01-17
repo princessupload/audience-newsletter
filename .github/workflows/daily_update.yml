@@ -27,41 +27,48 @@ jobs:
       
       - name: Update lottery data from official sources
         run: python update_data.py
+        continue-on-error: true
       
       - name: Generate newsletter HTML
         run: python generate_newsletter.py
       
       - name: Deploy to princessupload.net via SFTP
         env:
-          SFTP_HOST: ${{ secrets.SFTP_HOST }}
-          SFTP_USER: ${{ secrets.SFTP_USER }}
           SFTP_PASSWORD: ${{ secrets.SFTP_PASSWORD }}
         run: |
           python -c "
           import paramiko
           import os
           
-          host = os.environ.get('SFTP_HOST', 'iad1-shared-b8-12.dreamhost.com')
-          user = os.environ.get('SFTP_USER', 'societyofsara')
           password = os.environ.get('SFTP_PASSWORD', '')
-          
           if not password:
               print('⚠️ SFTP_PASSWORD not set - skipping deploy')
               exit(0)
           
-          print('🚀 Connecting to', host)
-          transport = paramiko.Transport((host, 22))
-          transport.connect(username=user, password=password)
+          print('🚀 Connecting to DreamHost...')
+          transport = paramiko.Transport(('iad1-shared-b8-12.dreamhost.com', 22))
+          transport.connect(username='societyofsara', password=password)
           sftp = paramiko.SFTPClient.from_transport(transport)
           
-          local_file = 'output/latest.html'
-          remote_file = '/home/societyofsara/princessupload.net/lottery-newsletter.html'
+          # Upload newsletter
+          sftp.put('output/latest.html', '/home/societyofsara/princessupload.net/lottery-newsletter.html')
+          print('✅ Newsletter deployed')
           
-          sftp.put(local_file, remote_file)
-          print('✅ Deployed to https://www.princessupload.net/lottery-newsletter.html')
+          # Upload subscribe.php if it exists
+          import os.path
+          if os.path.exists('subscribe.php'):
+              sftp.put('subscribe.php', '/home/societyofsara/princessupload.net/subscribe.php')
+              print('✅ Subscribe handler deployed')
+          
+          # Ensure data directory exists for subscribers
+          try:
+              sftp.mkdir('/home/societyofsara/princessupload.net/data')
+          except:
+              pass  # Already exists
           
           sftp.close()
           transport.close()
+          print('🌐 Live at: https://www.princessupload.net/lottery-newsletter.html')
           "
       
       - name: Commit and push data changes
@@ -70,4 +77,4 @@ jobs:
           git config --local user.name "GitHub Action"
           git add -A
           git diff --staged --quiet || git commit -m "Auto-update: $(date +'%Y-%m-%d %H:%M') UTC"
-          git push
+          git push || true

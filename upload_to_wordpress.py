@@ -11,7 +11,7 @@ from datetime import datetime
 # SFTP Configuration
 SFTP_HOST = "iad1-shared-b8-12.dreamhost.com"
 SFTP_USER = "societyofsara"
-SFTP_PASS = os.environ.get("SFTP_PASSWORD", "8020ruler@")
+SFTP_PASS = os.environ.get("SFTP_PASSWORD", "")
 
 # Paths
 LOCAL_FILE = Path(__file__).parent / "output" / "latest.html"
