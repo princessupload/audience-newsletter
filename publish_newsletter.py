@@ -26,9 +26,9 @@ OUTPUT_DIR = BASE_DIR / 'output'
 CONFIG = {
     'substack': {
         'enabled': True,
-        'method': 'email',  # Send directly to subscriber emails
-        'subscribers_file': 'subscribers.txt',  # One email per line
-        'description': 'Send newsletter directly to Substack subscriber emails'
+        'method': 'post_email',  # Email to Substack's post address = auto-publish to all subscribers
+        'post_email': os.environ.get('SUBSTACK_POST_EMAIL', ''),  # yourname+post@mg.substack.com
+        'description': 'Email to Substack post address = auto-sends to ALL subscribers'
     },
     'patreon': {
         'enabled': True,
@@ -168,20 +168,22 @@ def send_email(to_addresses, subject, html_content, config):
         return False, f"Email error: {e}"
 
 def publish_to_substack():
-    """Send newsletter directly to subscriber emails."""
-    print("\n📧 Publishing to Subscribers...")
+    """Publish to Substack via post-by-email (auto-sends to ALL subscribers)."""
+    print("\n📧 Publishing to Substack...")
     
-    # Check subscriber list freshness
-    sync_substack_subscribers()
-    
-    subscribers = load_subscribers()
-    if not subscribers:
-        print("   ⚠️  No subscribers found!")
-        print("   📝 To add subscribers:")
-        print("      1. Go to Substack > Subscribers > Export")
-        print("      2. Download CSV and copy email addresses")
-        print("      3. Paste emails into: subscribers.txt (one per line)")
-        print(f"      4. File location: {BASE_DIR / 'subscribers.txt'}")
+    post_email = CONFIG['substack']['post_email']
+    if not post_email:
+        print("   ⚠️  SUBSTACK_POST_EMAIL not configured!")
+        print("")
+        print("   📝 ONE-TIME SETUP (do this now):")
+        print("      1. Go to Substack → Settings → Publishing")
+        print("      2. Enable 'Post via email'")
+        print("      3. Copy your posting email (looks like: yourname+post@mg.substack.com)")
+        print("      4. Run this command in PowerShell:")
+        print("")
+        print('      [Environment]::SetEnvironmentVariable("SUBSTACK_POST_EMAIL", "YOUR_EMAIL_HERE", "User")')
+        print("")
+        print("      5. Restart your terminal and run again!")
         return False
     
     html = load_newsletter_html()
@@ -191,21 +193,16 @@ def publish_to_substack():
     
     subject = f"🎰 Lottery Pool Picks - {datetime.now().strftime('%B %d, %Y')}"
     
-    # Send to subscribers in batches to avoid spam limits
-    batch_size = 50
-    total_sent = 0
+    # Send to Substack's post email - this auto-publishes to ALL subscribers!
+    success, msg = send_email([post_email], subject, html, CONFIG['email'])
     
-    for i in range(0, len(subscribers), batch_size):
-        batch = subscribers[i:i+batch_size]
-        success, msg = send_email(batch, subject, html, CONFIG['email'])
-        if success:
-            total_sent += len(batch)
-            print(f"   ✅ Sent batch {i//batch_size + 1}: {len(batch)} emails")
-        else:
-            print(f"   ❌ Batch {i//batch_size + 1} failed: {msg}")
+    if success:
+        print(f"   ✅ Sent to Substack! Auto-publishing to all subscribers...")
+        print(f"   📬 Check your Substack dashboard to confirm")
+    else:
+        print(f"   ❌ Failed: {msg}")
     
-    print(f"   📬 Total sent: {total_sent}/{len(subscribers)} subscribers")
-    return total_sent > 0
+    return success
 
 def publish_to_patreon():
     """Publish to Patreon via API."""
