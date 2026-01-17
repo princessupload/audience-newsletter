@@ -1050,6 +1050,10 @@ def generate_newsletter_html(draws_by_lottery, jackpots):
             <p style="margin-top: 5px; font-size: 0.8em; color: #555;">
                 Generated: {times_str}
             </p>
+            <p style="margin-top: 15px; font-size: 0.75em; color: #888; border-top: 1px solid #ddd; padding-top: 10px;">
+                To unsubscribe, reply to this email with "UNSUBSCRIBE" in the subject line.<br>
+                Or email: <a href="mailto:princessuploadie@gmail.com?subject=UNSUBSCRIBE" style="color: #888;">princessuploadie@gmail.com</a>
+            </p>
         </div>
     </div>
 </body>

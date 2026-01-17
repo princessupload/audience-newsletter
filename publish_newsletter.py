@@ -53,8 +53,19 @@ CONFIG = {
 }
 
 def load_subscribers():
-    """Load subscriber emails from file."""
+    """Load subscriber emails from file, excluding unsubscribed."""
     subscribers_file = BASE_DIR / 'subscribers.txt'
+    unsubscribed_file = BASE_DIR / 'unsubscribed.txt'
+    
+    # Load unsubscribed emails
+    unsubscribed = set()
+    if unsubscribed_file.exists():
+        with open(unsubscribed_file, 'r') as f:
+            for line in f:
+                email = line.strip().lower()
+                if email and '@' in email:
+                    unsubscribed.add(email)
+    
     if not subscribers_file.exists():
         return []
     
@@ -63,8 +74,64 @@ def load_subscribers():
         for line in f:
             email = line.strip()
             if email and '@' in email and not email.startswith('#'):
-                subscribers.append(email)
+                # Skip unsubscribed emails
+                if email.lower() not in unsubscribed:
+                    subscribers.append(email)
     return subscribers
+
+def add_unsubscribe(email):
+    """Add email to unsubscribed list."""
+    unsubscribed_file = BASE_DIR / 'unsubscribed.txt'
+    email = email.strip().lower()
+    
+    # Check if already unsubscribed
+    existing = set()
+    if unsubscribed_file.exists():
+        with open(unsubscribed_file, 'r') as f:
+            existing = {line.strip().lower() for line in f if line.strip()}
+    
+    if email not in existing:
+        with open(unsubscribed_file, 'a') as f:
+            f.write(f"{email}\n")
+        print(f"   ✅ Unsubscribed: {email}")
+        return True
+    return False
+
+def sync_substack_subscribers():
+    """
+    NOTE: Substack does NOT have a public API for fetching subscribers.
+    You must manually export subscribers from Substack Dashboard.
+    
+    Steps:
+    1. Go to Substack > Subscribers
+    2. Click Export (top right)
+    3. Download CSV
+    4. Copy email addresses to subscribers.txt
+    
+    This function checks if subscribers.txt was recently updated.
+    """
+    subscribers_file = BASE_DIR / 'subscribers.txt'
+    
+    if not subscribers_file.exists():
+        print("   ⚠️  No subscribers.txt found")
+        print("   📝 Export your Substack subscribers manually:")
+        print("      1. Substack > Subscribers > Export")
+        print("      2. Copy emails to subscribers.txt")
+        return False
+    
+    # Check file modification time
+    import os
+    mtime = os.path.getmtime(subscribers_file)
+    last_modified = datetime.fromtimestamp(mtime)
+    days_old = (datetime.now() - last_modified).days
+    
+    if days_old > 7:
+        print(f"   ⚠️  subscribers.txt is {days_old} days old!")
+        print("   📝 Consider re-exporting from Substack for new subscribers")
+    else:
+        print(f"   ✅ subscribers.txt updated {days_old} days ago")
+    
+    return True
 
 def load_newsletter_html():
     """Load the latest newsletter HTML."""
@@ -103,6 +170,9 @@ def send_email(to_addresses, subject, html_content, config):
 def publish_to_substack():
     """Send newsletter directly to subscriber emails."""
     print("\n📧 Publishing to Subscribers...")
+    
+    # Check subscriber list freshness
+    sync_substack_subscribers()
     
     subscribers = load_subscribers()
     if not subscribers:
