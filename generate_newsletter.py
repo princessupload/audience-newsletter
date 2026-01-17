@@ -790,7 +790,41 @@ def generate_newsletter_html(draws_by_lottery, jackpots):
                 <span class="heart-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#ff47bb"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg></span>
             </h1>
             <p class="subtitle">Build Your Own Tickets</p>
-            <div class="times-bar">📅 {current_date} | 🕐 {times_str}</div>
+            <div class="times-bar">
+                <div style="font-size: 1.1em; font-weight: bold;">🕐 CT Time: <span id="ct-clock">--:--:-- --</span></div>
+                <div style="margin-top: 5px; font-size: 0.9em;">📅 {current_date}</div>
+            </div>
+        </div>
+        
+        <!-- UPCOMING DRAWINGS WITH COUNTDOWNS -->
+        <div class="section" style="background: linear-gradient(135deg, #fff8e1 0%, #ffecb3 100%); border-color: #ffc107;">
+            <h2 class="section-title" style="color: #ff8f00;">⏰ Upcoming Drawings</h2>
+            <div class="lottery-grid">
+                <div class="lottery-card l4l" style="text-align: center;">
+                    <div style="font-size: 1.3em; font-weight: bold; color: #ff47bb;">🍀 Lucky for Life</div>
+                    <div style="font-size: 0.9em; color: #666;">Daily @ 9:38 PM CT</div>
+                    <div id="l4l-next" style="font-weight: bold; margin: 8px 0;"></div>
+                    <div id="l4l-countdown" class="countdown" style="font-size: 1.1em;"></div>
+                </div>
+                <div class="lottery-card la" style="text-align: center;">
+                    <div style="font-size: 1.3em; font-weight: bold; color: #0288d1;">⭐ Lotto America</div>
+                    <div style="font-size: 0.9em; color: #666;">Mon/Wed/Sat @ 10:00 PM CT</div>
+                    <div id="la-next" style="font-weight: bold; margin: 8px 0;"></div>
+                    <div id="la-countdown" class="countdown" style="font-size: 1.1em;"></div>
+                </div>
+                <div class="lottery-card pb" style="text-align: center;">
+                    <div style="font-size: 1.3em; font-weight: bold; color: #E31B23;">🔴 Powerball</div>
+                    <div style="font-size: 0.9em; color: #666;">Mon/Wed/Sat @ 9:59 PM CT</div>
+                    <div id="pb-next" style="font-weight: bold; margin: 8px 0;"></div>
+                    <div id="pb-countdown" class="countdown" style="font-size: 1.1em;"></div>
+                </div>
+                <div class="lottery-card mm" style="text-align: center;">
+                    <div style="font-size: 1.3em; font-weight: bold; color: #666;">💰 Mega Millions</div>
+                    <div style="font-size: 0.9em; color: #666;">Tue/Fri @ 10:00 PM CT</div>
+                    <div id="mm-next" style="font-weight: bold; margin: 8px 0;"></div>
+                    <div id="mm-countdown" class="countdown" style="font-size: 1.1em;"></div>
+                </div>
+            </div>
         </div>
         
         <!-- LATEST DRAWINGS -->
@@ -1094,6 +1128,122 @@ def generate_newsletter_html(draws_by_lottery, jackpots):
             </p>
         </div>
     </div>
+    
+    <script>
+    // CT Time Clock
+    function updateCTClock() {{
+        var now = new Date();
+        var ct = new Date(now.toLocaleString('en-US', {{timeZone: 'America/Chicago'}}));
+        var hours = ct.getHours();
+        var minutes = ct.getMinutes().toString().padStart(2, '0');
+        var seconds = ct.getSeconds().toString().padStart(2, '0');
+        var ampm = hours >= 12 ? 'PM' : 'AM';
+        var hour12 = hours % 12 || 12;
+        document.getElementById('ct-clock').textContent = hour12 + ':' + minutes + ':' + seconds + ' ' + ampm;
+    }}
+    
+    // Get next draw time for each lottery
+    function getNextDraw(lottery) {{
+        var now = new Date();
+        var ct = new Date(now.toLocaleString('en-US', {{timeZone: 'America/Chicago'}}));
+        
+        var schedules = {{
+            'l4l': {{days: null, hour: 21, minute: 38}},
+            'la':  {{days: [1, 3, 6], hour: 22, minute: 0}},
+            'pb':  {{days: [1, 3, 6], hour: 21, minute: 59}},
+            'mm':  {{days: [2, 5], hour: 22, minute: 0}}
+        }};
+        
+        var sched = schedules[lottery];
+        var next = new Date(ct);
+        next.setHours(sched.hour, sched.minute, 0, 0);
+        
+        if (sched.days === null) {{
+            if (ct >= next) {{
+                next.setDate(next.getDate() + 1);
+            }}
+        }} else {{
+            for (var i = 0; i < 7; i++) {{
+                var checkDay = (ct.getDay() + i) % 7;
+                if (sched.days.includes(checkDay)) {{
+                    next.setDate(ct.getDate() + i);
+                    next.setHours(sched.hour, sched.minute, 0, 0);
+                    if (next > ct) break;
+                }}
+            }}
+            if (next <= ct) {{
+                for (var j = 1; j <= 7; j++) {{
+                    var checkDay2 = (ct.getDay() + j) % 7;
+                    if (sched.days.includes(checkDay2)) {{
+                        next.setDate(ct.getDate() + j);
+                        next.setHours(sched.hour, sched.minute, 0, 0);
+                        break;
+                    }}
+                }}
+            }}
+        }}
+        return next;
+    }}
+    
+    // Format countdown
+    function formatCountdown(ms) {{
+        if (ms <= 0) return '🎉 DRAWING NOW!';
+        var hours = Math.floor(ms / (1000 * 60 * 60));
+        var minutes = Math.floor((ms % (1000 * 60 * 60)) / (1000 * 60));
+        var seconds = Math.floor((ms % (1000 * 60)) / 1000);
+        
+        if (hours > 24) {{
+            var days = Math.floor(hours / 24);
+            var h = hours % 24;
+            return days + 'd ' + h + 'h ' + minutes + 'm ' + seconds + 's';
+        }}
+        return hours + 'h ' + minutes + 'm ' + seconds + 's';
+    }}
+    
+    // Format date nicely
+    function formatDate(date) {{
+        var days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+        var months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+        return days[date.getDay()] + ', ' + months[date.getMonth()] + ' ' + date.getDate();
+    }}
+    
+    // Update all countdowns
+    function updateCountdowns() {{
+        var lotteries = ['l4l', 'la', 'pb', 'mm'];
+        var now = new Date();
+        
+        lotteries.forEach(function(lottery) {{
+            var next = getNextDraw(lottery);
+            var ms = next - now;
+            
+            var nextEl = document.getElementById(lottery + '-next');
+            var countdownEl = document.getElementById(lottery + '-countdown');
+            
+            if (nextEl) {{
+                var hour = next.getHours();
+                var ampm = hour >= 12 ? 'PM' : 'AM';
+                var hour12 = hour % 12 || 12;
+                var min = next.getMinutes().toString().padStart(2, '0');
+                nextEl.textContent = '📅 ' + formatDate(next) + ' @ ' + hour12 + ':' + min + ' ' + ampm + ' CT';
+            }}
+            
+            if (countdownEl) {{
+                countdownEl.textContent = '⏱️ ' + formatCountdown(ms);
+                if (ms < 3600000) {{
+                    countdownEl.classList.add('soon');
+                }} else {{
+                    countdownEl.classList.remove('soon');
+                }}
+            }}
+        }});
+    }}
+    
+    // Start updates
+    updateCTClock();
+    updateCountdowns();
+    setInterval(updateCTClock, 1000);
+    setInterval(updateCountdowns, 1000);
+    </script>
 </body>
 </html>'''
     
