@@ -47,7 +47,7 @@ LOTTERY_CONFIG = {
         'main_count': 5,
         'strategy': 'HOLD',
         'strategy_desc': 'Pick once, play FOREVER',
-        'optimal_window': 400,
+        'optimal_window': 200,  # Optimized via walk-forward testing
         'pattern_stability': 68.9,
         'best_methods': ['Position Frequency (2.57× validated)', 'Constraint Filter (87% pass)'],
         'grand_prize': '$7K/Week for Life',
@@ -71,7 +71,7 @@ LOTTERY_CONFIG = {
         'main_count': 5,
         'strategy': 'HOLD',
         'strategy_desc': 'Pick once, play FOREVER',
-        'optimal_window': 150,
+        'optimal_window': 200,  # Optimized via walk-forward testing
         'pattern_stability': 60.0,
         'best_methods': ['Position Frequency (2.62× validated)', 'Constraint Filter (86% pass)'],
         'grand_prize': None,
@@ -94,7 +94,7 @@ LOTTERY_CONFIG = {
         'main_count': 5,
         'strategy': 'HOLD_REVIEW',
         'strategy_desc': 'Pick once, review every ~2 years',
-        'optimal_window': 100,
+        'optimal_window': 200,  # Optimized via walk-forward testing
         'pattern_stability': 46.7,
         'best_methods': ['Position Frequency (2.46× validated)', 'Constraint Filter'],
         'grand_prize': None,
