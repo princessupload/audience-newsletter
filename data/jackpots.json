@@ -1,18 +1,18 @@
 {
   "pb": {
-    "jackpot": 230000000,
-    "cash_value": 105000000
+    "jackpot": 179000000,
+    "cash_value": 80550000
   },
   "mm": {
-    "jackpot": 230000000,
-    "cash_value": 105000000
+    "jackpot": 250000000,
+    "cash_value": 113500000
+  },
+  "la": {
+    "jackpot": 12740000,
+    "cash_value": 6370000
   },
   "l4l": {
     "jackpot": 7000000,
     "cash_value": 5750000
-  },
-  "la": {
-    "jackpot": 12980000,
-    "cash_value": 5841000
   }
 }
