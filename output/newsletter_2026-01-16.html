@@ -41,7 +41,7 @@
         }
         
         .container {
-            max-width: 900px;
+            max-width: 1000px;
             margin: 0 auto;
             position: relative;
             z-index: 2;
@@ -55,6 +55,19 @@
             text-align: center;
             margin-bottom: 25px;
             box-shadow: 0 8px 32px rgba(255, 71, 187, 0.4);
+        }
+        
+        .heart-icon {
+            display: inline-block;
+            width: 28px;
+            height: 28px;
+            vertical-align: middle;
+            margin: 0 8px;
+        }
+        
+        .heart-icon svg {
+            width: 100%;
+            height: 100%;
         }
         
         h1 {
@@ -73,18 +86,19 @@
             font-size: 1.2em;
             color: #ff47bb;
             font-style: italic;
+            margin-bottom: 15px;
         }
         
-        .date-badge {
+        .times-bar {
             background: linear-gradient(135deg, #B0E0E6 0%, #7DD3FC 100%);
             border: 3px solid #7DD3FC;
             border-radius: 20px;
-            padding: 10px 25px;
+            padding: 12px 25px;
             display: inline-block;
-            margin-top: 15px;
             font-family: 'Libre Baskerville', serif;
             font-weight: 700;
             color: #000;
+            font-size: 0.95em;
         }
         
         .section {
@@ -106,51 +120,73 @@
             text-align: center;
         }
         
+        .lottery-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+        }
+        
+        @media (max-width: 768px) {
+            .lottery-grid { grid-template-columns: 1fr; }
+        }
+        
         .lottery-card {
             background: linear-gradient(135deg, #fff0f5 0%, #f0f8ff 100%);
-            border: 3px solid #7DD3FC;
+            border: 4px solid;
             border-radius: 20px;
             padding: 20px;
-            margin: 20px 0;
-            box-shadow: 0 4px 15px rgba(125, 211, 252, 0.3);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
         }
+        
+        .lottery-card.l4l { border-color: #ff47bb; }
+        .lottery-card.la { border-color: #7DD3FC; }
+        .lottery-card.pb { border-color: #E31B23; }
+        .lottery-card.mm { border-color: #C0C0C0; }
         
         .lottery-header {
             display: flex;
-            justify-content: space-between;
             align-items: center;
-            flex-wrap: wrap;
             gap: 10px;
             margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px dashed rgba(0,0,0,0.1);
         }
         
         .lottery-name {
             font-family: 'Playfair Display', serif;
-            font-size: 1.5em;
+            font-size: 1.4em;
             color: #ff47bb;
+            flex-grow: 1;
         }
         
-        .strategy-badge {
-            background: linear-gradient(135deg, #ff47bb 0%, #ff75cc 100%);
-            color: white;
-            padding: 6px 15px;
-            border-radius: 15px;
+        .draw-schedule {
             font-size: 0.85em;
-            font-weight: bold;
+            color: #ff47bb;
+            font-weight: 600;
+            margin-bottom: 8px;
         }
         
-        .strategy-badge.next-draw {
-            background: linear-gradient(135deg, #7DD3FC 0%, #B0E0E6 100%);
-            color: #000;
-        }
-        
-        .jackpot-info {
-            background: linear-gradient(135deg, #32CD32 0%, #228B22 100%);
-            color: white;
-            padding: 8px 15px;
+        .countdown {
+            background: linear-gradient(135deg, #FFEB3B 0%, #FFD700 100%);
+            border: 3px solid #FFD700;
             border-radius: 15px;
-            font-weight: bold;
-            font-size: 0.9em;
+            padding: 10px;
+            text-align: center;
+            font-weight: 700;
+            margin-bottom: 12px;
+            font-size: 0.95em;
+        }
+        
+        .countdown.soon {
+            background: linear-gradient(135deg, #ff47bb 0%, #ff75cc 100%);
+            border-color: #ff47bb;
+            color: white;
+            animation: pulse 1s ease-in-out infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.02); }
         }
         
         .numbers-row {
@@ -158,7 +194,8 @@
             flex-wrap: wrap;
             gap: 8px;
             align-items: center;
-            margin: 15px 0;
+            margin: 12px 0;
+            justify-content: center;
         }
         
         .ball {
@@ -170,22 +207,16 @@
             justify-content: center;
             font-weight: bold;
             font-size: 16px;
-            background: linear-gradient(135deg, #ffffff 0%, #f8f8f8 100%);
-            border: 3px solid #ff47bb;
-            color: #c2185b;
-            box-shadow: 0 3px 10px rgba(255, 71, 187, 0.25);
+            background: linear-gradient(135deg, #7DD3FC 0%, #B0E0E6 100%);
+            border: 3px solid rgba(0,0,0,0.2);
+            color: #000;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.15);
         }
         
         .ball.bonus {
-            background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%);
-            border-color: #FF8C00;
-            color: #5d4037;
-        }
-        
-        .ball.green {
-            background: linear-gradient(135deg, #90EE90 0%, #32CD32 100%);
-            border-color: #228B22;
-            color: #1b5e20;
+            background: linear-gradient(135deg, #ff47bb 0%, #ff75cc 100%);
+            border-color: #ff47bb;
+            color: white;
         }
         
         .plus {
@@ -195,10 +226,52 @@
             font-weight: bold;
         }
         
-        .draw-info {
+        .draw-date {
             font-size: 0.9em;
             color: #666;
-            margin-top: 5px;
+            text-align: center;
+            margin-top: 8px;
+        }
+        
+        .jackpot-section {
+            background: linear-gradient(135deg, #87CEEB 0%, #B0E0E6 100%);
+            border: 3px solid #87CEEB;
+            border-radius: 15px;
+            padding: 15px;
+            margin: 12px 0;
+            text-align: center;
+        }
+        
+        .jackpot-amount {
+            font-size: 1.8em;
+            font-weight: 700;
+            background: linear-gradient(135deg, #E31B23 0%, #ff47bb 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-family: 'Playfair Display', serif;
+        }
+        
+        .jackpot-details {
+            font-size: 0.85em;
+            color: #333;
+            margin-top: 8px;
+        }
+        
+        .strategy-badge {
+            background: linear-gradient(135deg, #ff47bb 0%, #ff75cc 100%);
+            color: white;
+            padding: 6px 15px;
+            border-radius: 15px;
+            font-size: 0.8em;
+            font-weight: bold;
+            display: inline-block;
+            margin-bottom: 10px;
+        }
+        
+        .strategy-badge.next-draw {
+            background: linear-gradient(135deg, #7DD3FC 0%, #B0E0E6 100%);
+            color: #000;
         }
         
         .pool-section {
@@ -218,31 +291,32 @@
         }
         
         .pool-row {
-            margin: 10px 0;
+            margin: 8px 0;
             display: flex;
             align-items: center;
             flex-wrap: wrap;
-            gap: 8px;
+            gap: 6px;
         }
         
         .pool-label {
             font-weight: bold;
             color: #c2185b;
-            min-width: 90px;
+            min-width: 85px;
+            font-size: 0.9em;
         }
         
         .pool-numbers {
             display: flex;
             flex-wrap: wrap;
-            gap: 6px;
+            gap: 5px;
         }
         
         .pool-num {
             background: linear-gradient(135deg, #B0E0E6 0%, #7DD3FC 100%);
             color: #01579b;
-            padding: 5px 12px;
-            border-radius: 15px;
-            font-size: 0.95em;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 0.85em;
             font-weight: bold;
             border: 2px solid #7DD3FC;
         }
@@ -259,19 +333,34 @@
             color: #1b5e20;
         }
         
-        .constraints-box {
+        .methods-box {
             background: #fffaf0;
             border: 2px solid #ffa500;
             border-radius: 12px;
             padding: 12px;
-            margin-top: 15px;
-            font-size: 0.9em;
+            margin-top: 12px;
+            font-size: 0.85em;
+        }
+        
+        .methods-title {
+            color: #ff8c00;
+            font-weight: bold;
+            margin-bottom: 6px;
+        }
+        
+        .constraints-box {
+            background: #f0fff0;
+            border: 2px solid #32CD32;
+            border-radius: 12px;
+            padding: 12px;
+            margin-top: 12px;
+            font-size: 0.85em;
         }
         
         .constraints-title {
-            color: #ff8c00;
+            color: #228B22;
             font-weight: bold;
-            margin-bottom: 8px;
+            margin-bottom: 6px;
         }
         
         .how-to-box {
@@ -333,86 +422,91 @@
             color: #666;
             font-size: 0.9em;
         }
-        
-        @media (max-width: 600px) {
-            h1 { font-size: 2em; }
-            .ball { width: 38px; height: 38px; font-size: 14px; }
-            .lottery-header { flex-direction: column; align-items: flex-start; }
-        }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="header">
-            <h1>💖 LOTTERY NEWS 💖</h1>
-            <p class="subtitle">Build Your Own Lucky Numbers</p>
-            <div class="date-badge">📅 January 16, 2026</div>
+            <h1>
+                <span class="heart-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#ff47bb"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg></span>
+                LOTTERY NEWS
+                <span class="heart-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#ff47bb"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg></span>
+            </h1>
+            <p class="subtitle">Build Your Own Lucky Numbers with Data-Driven Pools</p>
+            <div class="times-bar">📅 January 16, 2026 | 🕐 Oklahoma: 06:55 PM | California: 04:55 PM | Massachusetts: 07:55 PM</div>
         </div>
         
         <!-- LATEST DRAWINGS -->
         <div class="section">
             <h2 class="section-title">🎱 Latest Drawing Results</h2>
+            <div class="lottery-grid">
 
-            <div class="lottery-card">
-                <div class="lottery-header">
-                    <span class="lottery-name">🍀 Lucky for Life</span>
-                    <span class="strategy-badge ">Pick once, play FOREVER</span>
-                    <span class="jackpot-info">💰 N/A after tax</span>
+                <div class="lottery-card l4l">
+                    <div class="lottery-header">
+                        <span class="lottery-name">🍀 Lucky for Life</span>
+                    </div>
+                    <div class="draw-schedule">📆 Draws: Mon, Thu at 9:38 PM CT</div>
+                    <div class="countdown ">⏰ Next: In 3 days</div>
+                    
+                <div class="jackpot-section">
+                    <div class="jackpot-amount">$1,000/day for LIFE</div>
+                    <div class="jackpot-details">Top Prize</div>
                 </div>
-                <div class="numbers-row">
-                    <span class="ball">3</span><span class="ball">24</span><span class="ball">32</span><span class="ball">39</span><span class="ball">41</span>
-                    <span class="plus">+</span>
-                    <span class="ball bonus">18</span>
-                    <span style="margin-left: 10px; color: #666;">Lucky Ball</span>
+
+                    <div class="numbers-row">
+                        <span class="ball">3</span><span class="ball">24</span><span class="ball">32</span><span class="ball">39</span><span class="ball">41</span>
+                        <span class="plus">+</span>
+                        <span class="ball bonus">18</span>
+                    </div>
+                    <div class="draw-date">📅 Last Draw: 2026-01-15</div>
                 </div>
-                <div class="draw-info">📅 Draw Date: 2026-01-15</div>
+
+                <div class="lottery-card la">
+                    <div class="lottery-header">
+                        <span class="lottery-name">⭐ Lotto America</span>
+                    </div>
+                    <div class="draw-schedule">📆 Draws: Mon, Wed, Sat at 10:00 PM CT</div>
+                    <div class="countdown ">⏰ Next: TOMORROW at 10:00 PM CT</div>
+                    
+                    <div class="numbers-row">
+                        <span class="ball">1</span><span class="ball">10</span><span class="ball">23</span><span class="ball">33</span><span class="ball">35</span>
+                        <span class="plus">+</span>
+                        <span class="ball bonus">6</span>
+                    </div>
+                    <div class="draw-date">📅 Last Draw: 2026-01-14</div>
+                </div>
+
+                <div class="lottery-card pb">
+                    <div class="lottery-header">
+                        <span class="lottery-name">🔴 Powerball</span>
+                    </div>
+                    <div class="draw-schedule">📆 Draws: Mon, Wed, Sat at 9:59 PM CT</div>
+                    <div class="countdown ">⏰ Next: TOMORROW at 9:59 PM CT</div>
+                    
+                    <div class="numbers-row">
+                        <span class="ball">6</span><span class="ball">24</span><span class="ball">39</span><span class="ball">43</span><span class="ball">51</span>
+                        <span class="plus">+</span>
+                        <span class="ball bonus">2</span>
+                    </div>
+                    <div class="draw-date">📅 Last Draw: 2026-01-14</div>
+                </div>
+
+                <div class="lottery-card mm">
+                    <div class="lottery-header">
+                        <span class="lottery-name">💰 Mega Millions</span>
+                    </div>
+                    <div class="draw-schedule">📆 Draws: Tue, Fri at 10:00 PM CT</div>
+                    <div class="countdown soon">⏰ Next: TODAY at 10:00 PM CT</div>
+                    
+                    <div class="numbers-row">
+                        <span class="ball">16</span><span class="ball">40</span><span class="ball">56</span><span class="ball">64</span><span class="ball">66</span>
+                        <span class="plus">+</span>
+                        <span class="ball bonus">4</span>
+                    </div>
+                    <div class="draw-date">📅 Last Draw: 2026-01-13</div>
+                </div>
+
             </div>
-
-            <div class="lottery-card">
-                <div class="lottery-header">
-                    <span class="lottery-name">⭐ Lotto America</span>
-                    <span class="strategy-badge ">Pick once, play FOREVER</span>
-                    <span class="jackpot-info">💰 N/A after tax</span>
-                </div>
-                <div class="numbers-row">
-                    <span class="ball">1</span><span class="ball">10</span><span class="ball">23</span><span class="ball">33</span><span class="ball">35</span>
-                    <span class="plus">+</span>
-                    <span class="ball bonus">6</span>
-                    <span style="margin-left: 10px; color: #666;">Star Ball</span>
-                </div>
-                <div class="draw-info">📅 Draw Date: 2026-01-14</div>
-            </div>
-
-            <div class="lottery-card">
-                <div class="lottery-header">
-                    <span class="lottery-name">🔴 Powerball</span>
-                    <span class="strategy-badge ">Pick once, review every ~2 years</span>
-                    <span class="jackpot-info">💰 N/A after tax</span>
-                </div>
-                <div class="numbers-row">
-                    <span class="ball">6</span><span class="ball">24</span><span class="ball">39</span><span class="ball">43</span><span class="ball">51</span>
-                    <span class="plus">+</span>
-                    <span class="ball bonus">2</span>
-                    <span style="margin-left: 10px; color: #666;">Powerball</span>
-                </div>
-                <div class="draw-info">📅 Draw Date: 2026-01-14</div>
-            </div>
-
-            <div class="lottery-card">
-                <div class="lottery-header">
-                    <span class="lottery-name">💰 Mega Millions</span>
-                    <span class="strategy-badge next-draw">Pick fresh EACH draw</span>
-                    <span class="jackpot-info">💰 N/A after tax</span>
-                </div>
-                <div class="numbers-row">
-                    <span class="ball">16</span><span class="ball">40</span><span class="ball">56</span><span class="ball">64</span><span class="ball">66</span>
-                    <span class="plus">+</span>
-                    <span class="ball bonus">4</span>
-                    <span style="margin-left: 10px; color: #666;">Mega Ball</span>
-                </div>
-                <div class="draw-info">📅 Draw Date: 2026-01-13</div>
-            </div>
-
         </div>
         
         <!-- HOW TO BUILD YOUR TICKET -->
@@ -424,7 +518,7 @@
                 <ul class="how-to-list">
                     <li><strong>Pick 1 number</strong> from each Position Pool (1-5)</li>
                     <li><strong>Pick 1 bonus</strong> from the Bonus Pool</li>
-                    <li><strong>Verify</strong> your ticket passes the constraints</li>
+                    <li><strong>Verify</strong> your ticket passes the constraints below</li>
                     <li><strong>Play the SAME ticket</strong> every draw - patterns are stable!</li>
                 </ul>
             </div>
@@ -444,11 +538,11 @@
         <div class="section">
             <h2 class="section-title">🔢 Number Pools By Lottery</h2>
 
-            <div class="lottery-card">
+            <div class="lottery-card l4l" style="margin: 20px 0;">
                 <div class="lottery-header">
                     <span class="lottery-name">🍀 Lucky for Life</span>
-                    <span class="strategy-badge ">Pick once, play FOREVER</span>
                 </div>
+                <div class="strategy-badge ">Pick once, play FOREVER (68.9% stable)</div>
                 
                 <div class="pool-section">
                     <div class="pool-title">📊 Position Pools (pick 1 from each)</div>
@@ -478,7 +572,7 @@
                         <div class="pool-numbers"><span class="pool-num">46</span><span class="pool-num">47</span><span class="pool-num">45</span><span class="pool-num">48</span><span class="pool-num">43</span><span class="pool-num">44</span><span class="pool-num">40</span><span class="pool-num">41</span></div>
                     </div>
 
-                    <div class="pool-row" style="margin-top: 15px; padding-top: 10px; border-top: 1px dashed #F9A8D4;">
+                    <div class="pool-row" style="margin-top: 12px; padding-top: 10px; border-top: 1px dashed #F9A8D4;">
                         <span class="pool-label">Lucky Ball:</span>
                         <div class="pool-numbers"><span class="pool-num">15</span><span class="pool-num">11</span><span class="pool-num">8</span><span class="pool-num">2</span><span class="pool-num">12</span></div>
                     </div>
@@ -490,57 +584,62 @@
                 </div>
                 
                 <div class="pool-section">
-                    <div class="pool-title">🔄 Last Draw (35-48% repeat rate!)</div>
+                    <div class="pool-title">🔄 Last Draw Numbers (35-48% repeat rate!)</div>
                     <div class="pool-numbers"><span class="pool-num repeat">3</span><span class="pool-num repeat">24</span><span class="pool-num repeat">32</span><span class="pool-num repeat">39</span><span class="pool-num repeat">41</span></div>
                 </div>
                 
+                <div class="methods-box">
+                    <div class="methods-title">🧪 Best Methods for Lucky for Life</div>
+                    <div>Position Frequency (40-44% stability)  •  Proven 3-Combos  •  Constraint Filter</div>
+                </div>
+                
                 <div class="constraints-box">
-                    <div class="constraints-title">✅ Ticket Constraints (verify your pick!)</div>
-                    <div>• <strong>Sum Range:</strong> 65 - 175</div>
-                    <div>• <strong>Decades:</strong> At least 3 different (1-10, 11-20, etc.)</div>
-                    <div>• <strong>Consecutive:</strong> Max 1 pair (like 12-13)</div>
-                    <div>• <strong>Odd Numbers:</strong> 2-3 recommended</div>
-                    <div>• <strong>High Numbers:</strong> 2-3 above 25</div>
+                    <div class="constraints-title">✅ Verify Your Ticket</div>
+                    <div>• <strong>Sum:</strong> 65 - 175</div>
+                    <div>• <strong>Decades:</strong> At least 3 different</div>
+                    <div>• <strong>Consecutive:</strong> Max 1 pair</div>
+                    <div>• <strong>Odd/Even:</strong> 2-3 odd numbers</div>
+                    <div>• <strong>High (25+):</strong> 2-3 numbers</div>
                 </div>
             </div>
 
-            <div class="lottery-card">
+            <div class="lottery-card la" style="margin: 20px 0;">
                 <div class="lottery-header">
                     <span class="lottery-name">⭐ Lotto America</span>
-                    <span class="strategy-badge ">Pick once, play FOREVER</span>
                 </div>
+                <div class="strategy-badge ">Pick once, play FOREVER (60.0% stable)</div>
                 
                 <div class="pool-section">
                     <div class="pool-title">📊 Position Pools (pick 1 from each)</div>
 
                     <div class="pool-row">
                         <span class="pool-label">Position 1:</span>
-                        <div class="pool-numbers"><span class="pool-num">1</span><span class="pool-num">4</span><span class="pool-num">3</span><span class="pool-num">2</span><span class="pool-num">8</span><span class="pool-num">5</span><span class="pool-num">9</span><span class="pool-num">6</span></div>
+                        <div class="pool-numbers"><span class="pool-num">1</span><span class="pool-num">4</span><span class="pool-num">8</span><span class="pool-num">2</span><span class="pool-num">12</span><span class="pool-num">3</span><span class="pool-num">5</span><span class="pool-num">9</span></div>
                     </div>
 
                     <div class="pool-row">
                         <span class="pool-label">Position 2:</span>
-                        <div class="pool-numbers"><span class="pool-num">15</span><span class="pool-num">10</span><span class="pool-num">11</span><span class="pool-num">19</span><span class="pool-num">9</span><span class="pool-num">16</span><span class="pool-num">5</span><span class="pool-num">8</span></div>
+                        <div class="pool-numbers"><span class="pool-num">10</span><span class="pool-num">19</span><span class="pool-num">24</span><span class="pool-num">13</span><span class="pool-num">12</span><span class="pool-num">15</span><span class="pool-num">9</span><span class="pool-num">11</span></div>
                     </div>
 
                     <div class="pool-row">
                         <span class="pool-label">Position 3:</span>
-                        <div class="pool-numbers"><span class="pool-num">23</span><span class="pool-num">27</span><span class="pool-num">25</span><span class="pool-num">37</span><span class="pool-num">20</span><span class="pool-num">21</span><span class="pool-num">29</span><span class="pool-num">31</span></div>
+                        <div class="pool-numbers"><span class="pool-num">23</span><span class="pool-num">27</span><span class="pool-num">25</span><span class="pool-num">20</span><span class="pool-num">35</span><span class="pool-num">26</span><span class="pool-num">13</span><span class="pool-num">37</span></div>
                     </div>
 
                     <div class="pool-row">
                         <span class="pool-label">Position 4:</span>
-                        <div class="pool-numbers"><span class="pool-num">42</span><span class="pool-num">40</span><span class="pool-num">33</span><span class="pool-num">41</span><span class="pool-num">36</span><span class="pool-num">37</span><span class="pool-num">39</span><span class="pool-num">38</span></div>
+                        <div class="pool-numbers"><span class="pool-num">35</span><span class="pool-num">45</span><span class="pool-num">40</span><span class="pool-num">43</span><span class="pool-num">33</span><span class="pool-num">30</span><span class="pool-num">37</span><span class="pool-num">25</span></div>
                     </div>
 
                     <div class="pool-row">
                         <span class="pool-label">Position 5:</span>
-                        <div class="pool-numbers"><span class="pool-num">51</span><span class="pool-num">52</span><span class="pool-num">50</span><span class="pool-num">47</span><span class="pool-num">42</span><span class="pool-num">46</span><span class="pool-num">48</span><span class="pool-num">49</span></div>
+                        <div class="pool-numbers"><span class="pool-num">50</span><span class="pool-num">51</span><span class="pool-num">47</span><span class="pool-num">52</span><span class="pool-num">42</span><span class="pool-num">46</span><span class="pool-num">39</span><span class="pool-num">35</span></div>
                     </div>
 
-                    <div class="pool-row" style="margin-top: 15px; padding-top: 10px; border-top: 1px dashed #F9A8D4;">
+                    <div class="pool-row" style="margin-top: 12px; padding-top: 10px; border-top: 1px dashed #F9A8D4;">
                         <span class="pool-label">Star Ball:</span>
-                        <div class="pool-numbers"><span class="pool-num">4</span><span class="pool-num">3</span><span class="pool-num">1</span><span class="pool-num">5</span><span class="pool-num">8</span></div>
+                        <div class="pool-numbers"><span class="pool-num">3</span><span class="pool-num">8</span><span class="pool-num">6</span><span class="pool-num">5</span><span class="pool-num">1</span></div>
                     </div>
                 </div>
 
@@ -550,25 +649,30 @@
                 </div>
                 
                 <div class="pool-section">
-                    <div class="pool-title">🔄 Last Draw (35-48% repeat rate!)</div>
+                    <div class="pool-title">🔄 Last Draw Numbers (35-48% repeat rate!)</div>
                     <div class="pool-numbers"><span class="pool-num repeat">1</span><span class="pool-num repeat">10</span><span class="pool-num repeat">23</span><span class="pool-num repeat">33</span><span class="pool-num repeat">35</span></div>
                 </div>
                 
+                <div class="methods-box">
+                    <div class="methods-title">🧪 Best Methods for Lotto America</div>
+                    <div>Hot-10 Method (2.6x improvement)  •  Position Frequency  •  Constraint Filter</div>
+                </div>
+                
                 <div class="constraints-box">
-                    <div class="constraints-title">✅ Ticket Constraints (verify your pick!)</div>
-                    <div>• <strong>Sum Range:</strong> 71 - 188</div>
-                    <div>• <strong>Decades:</strong> At least 2 different (1-10, 11-20, etc.)</div>
-                    <div>• <strong>Consecutive:</strong> Max 1 pair (like 12-13)</div>
-                    <div>• <strong>Odd Numbers:</strong> 2-3 recommended</div>
-                    <div>• <strong>High Numbers:</strong> 2-3 above 27</div>
+                    <div class="constraints-title">✅ Verify Your Ticket</div>
+                    <div>• <strong>Sum:</strong> 71 - 188</div>
+                    <div>• <strong>Decades:</strong> At least 2 different</div>
+                    <div>• <strong>Consecutive:</strong> Max 1 pair</div>
+                    <div>• <strong>Odd/Even:</strong> 2-3 odd numbers</div>
+                    <div>• <strong>High (27+):</strong> 2-3 numbers</div>
                 </div>
             </div>
 
-            <div class="lottery-card">
+            <div class="lottery-card pb" style="margin: 20px 0;">
                 <div class="lottery-header">
                     <span class="lottery-name">🔴 Powerball</span>
-                    <span class="strategy-badge ">Pick once, review every ~2 years</span>
                 </div>
+                <div class="strategy-badge ">Pick once, review every ~2 years (46.7% stable)</div>
                 
                 <div class="pool-section">
                     <div class="pool-title">📊 Position Pools (pick 1 from each)</div>
@@ -598,7 +702,7 @@
                         <div class="pool-numbers"><span class="pool-num">62</span><span class="pool-num">69</span><span class="pool-num">64</span><span class="pool-num">59</span><span class="pool-num">53</span><span class="pool-num">68</span><span class="pool-num">66</span><span class="pool-num">58</span></div>
                     </div>
 
-                    <div class="pool-row" style="margin-top: 15px; padding-top: 10px; border-top: 1px dashed #F9A8D4;">
+                    <div class="pool-row" style="margin-top: 12px; padding-top: 10px; border-top: 1px dashed #F9A8D4;">
                         <span class="pool-label">Powerball:</span>
                         <div class="pool-numbers"><span class="pool-num">23</span><span class="pool-num">2</span><span class="pool-num">14</span><span class="pool-num">1</span><span class="pool-num">19</span></div>
                     </div>
@@ -610,25 +714,30 @@
                 </div>
                 
                 <div class="pool-section">
-                    <div class="pool-title">🔄 Last Draw (35-48% repeat rate!)</div>
+                    <div class="pool-title">🔄 Last Draw Numbers (35-48% repeat rate!)</div>
                     <div class="pool-numbers"><span class="pool-num repeat">6</span><span class="pool-num repeat">24</span><span class="pool-num repeat">39</span><span class="pool-num repeat">43</span><span class="pool-num repeat">51</span></div>
                 </div>
                 
+                <div class="methods-box">
+                    <div class="methods-title">🧪 Best Methods for Powerball</div>
+                    <div>Position+Momentum (1.21x)  •  Hot Pair Anchor (1.20x)  •  Mod-512 Filter (1.20x)</div>
+                </div>
+                
                 <div class="constraints-box">
-                    <div class="constraints-title">✅ Ticket Constraints (verify your pick!)</div>
-                    <div>• <strong>Sum Range:</strong> 80 - 220</div>
-                    <div>• <strong>Decades:</strong> At least 3 different (1-10, 11-20, etc.)</div>
-                    <div>• <strong>Consecutive:</strong> Max 1 pair (like 12-13)</div>
-                    <div>• <strong>Odd Numbers:</strong> 2-3 recommended</div>
-                    <div>• <strong>High Numbers:</strong> 2-3 above 35</div>
+                    <div class="constraints-title">✅ Verify Your Ticket</div>
+                    <div>• <strong>Sum:</strong> 80 - 220</div>
+                    <div>• <strong>Decades:</strong> At least 3 different</div>
+                    <div>• <strong>Consecutive:</strong> Max 1 pair</div>
+                    <div>• <strong>Odd/Even:</strong> 2-3 odd numbers</div>
+                    <div>• <strong>High (35+):</strong> 2-3 numbers</div>
                 </div>
             </div>
 
-            <div class="lottery-card">
+            <div class="lottery-card mm" style="margin: 20px 0;">
                 <div class="lottery-header">
                     <span class="lottery-name">💰 Mega Millions</span>
-                    <span class="strategy-badge next-draw">Pick fresh EACH draw</span>
                 </div>
+                <div class="strategy-badge next-draw">Pick fresh EACH draw (Use NEXT DRAW method)</div>
                 
                 <div class="pool-section">
                     <div class="pool-title">📊 Position Pools (pick 1 from each)</div>
@@ -658,7 +767,7 @@
                         <div class="pool-numbers"><span class="pool-num">59</span><span class="pool-num">56</span><span class="pool-num">57</span><span class="pool-num">66</span><span class="pool-num">68</span><span class="pool-num">69</span><span class="pool-num">64</span><span class="pool-num">47</span></div>
                     </div>
 
-                    <div class="pool-row" style="margin-top: 15px; padding-top: 10px; border-top: 1px dashed #F9A8D4;">
+                    <div class="pool-row" style="margin-top: 12px; padding-top: 10px; border-top: 1px dashed #F9A8D4;">
                         <span class="pool-label">Mega Ball:</span>
                         <div class="pool-numbers"><span class="pool-num">4</span><span class="pool-num">6</span><span class="pool-num">7</span><span class="pool-num">18</span><span class="pool-num">19</span></div>
                     </div>
@@ -670,17 +779,22 @@
                 </div>
                 
                 <div class="pool-section">
-                    <div class="pool-title">🔄 Last Draw (35-48% repeat rate!)</div>
+                    <div class="pool-title">🔄 Last Draw Numbers (35-48% repeat rate!)</div>
                     <div class="pool-numbers"><span class="pool-num repeat">16</span><span class="pool-num repeat">40</span><span class="pool-num repeat">56</span><span class="pool-num repeat">64</span><span class="pool-num repeat">66</span></div>
                 </div>
                 
+                <div class="methods-box">
+                    <div class="methods-title">🧪 Best Methods for Mega Millions</div>
+                    <div>Hot Numbers  •  Repeat Likelihood (35-48%)  •  Momentum Analysis</div>
+                </div>
+                
                 <div class="constraints-box">
-                    <div class="constraints-title">✅ Ticket Constraints (verify your pick!)</div>
-                    <div>• <strong>Sum Range:</strong> 100 - 220</div>
-                    <div>• <strong>Decades:</strong> At least 3 different (1-10, 11-20, etc.)</div>
-                    <div>• <strong>Consecutive:</strong> Max 1 pair (like 12-13)</div>
-                    <div>• <strong>Odd Numbers:</strong> 2-3 recommended</div>
-                    <div>• <strong>High Numbers:</strong> 2-3 above 36</div>
+                    <div class="constraints-title">✅ Verify Your Ticket</div>
+                    <div>• <strong>Sum:</strong> 100 - 220</div>
+                    <div>• <strong>Decades:</strong> At least 3 different</div>
+                    <div>• <strong>Consecutive:</strong> Max 1 pair</div>
+                    <div>• <strong>Odd/Even:</strong> 2-3 odd numbers</div>
+                    <div>• <strong>High (36+):</strong> 2-3 numbers</div>
                 </div>
             </div>
 
@@ -688,7 +802,11 @@
         
         <!-- CTA -->
         <div class="cta-box">
-            <h3>✨ Want Live Analysis? ✨</h3>
+            <h3>
+                <span class="heart-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg></span>
+                Want Live Analysis?
+                <span class="heart-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg></span>
+            </h3>
             <p>Join us on Twitch and YouTube for drawing breakdowns!</p>
             <p style="margin-top: 12px; font-size: 1.1em;">
                 <a href="https://twitch.tv/princessupload">📺 Twitch</a> &nbsp;|&nbsp; 
@@ -697,9 +815,16 @@
         </div>
         
         <div class="footer">
-            <p>💖 With love from Princess Upload 💖</p>
-            <p style="margin-top: 8px; font-size: 0.85em;">
-                🎰 For entertainment purposes only • Generated January 16, 2026 at 06:18 PM CT (Oklahoma)
+            <p>
+                <span class="heart-icon" style="width: 20px; height: 20px;"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#ff47bb"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg></span>
+                With love from Princess Upload
+                <span class="heart-icon" style="width: 20px; height: 20px;"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#ff47bb"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg></span>
+            </p>
+            <p style="margin-top: 10px; font-size: 0.85em; color: #888;">
+                🎰 For entertainment purposes only
+            </p>
+            <p style="margin-top: 5px; font-size: 0.8em; color: #aaa;">
+                Generated: Oklahoma: 06:55 PM | California: 04:55 PM | Massachusetts: 07:55 PM
             </p>
         </div>
     </div>

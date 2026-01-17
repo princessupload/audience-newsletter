@@ -1,23 +1,40 @@
 #!/usr/bin/env python3
 """
 Lottery Audience Newsletter Generator
+Comprehensive newsletter with all lottery tracker features.
 Helps audience build their own unique lottery tickets using data-driven methods.
-Matches the Lottery Tracker app styling.
 """
 
 import json
-import os
-from datetime import datetime
+from datetime import datetime, timedelta
 from pathlib import Path
 from collections import Counter
+import pytz
 
 DATA_DIR = Path(__file__).parent / 'data'
 OUTPUT_DIR = Path(__file__).parent / 'output'
 
-# Oklahoma tax rates (24% federal + 4.75% state)
-FEDERAL_TAX = 0.24
-STATE_TAX = 0.0475
-TOTAL_TAX_RATE = FEDERAL_TAX + STATE_TAX
+# Tax rates by state
+TAX_RATES = {
+    'OK': {'federal': 0.24, 'state': 0.0475, 'name': 'Oklahoma'},
+    'CA': {'federal': 0.24, 'state': 0.00, 'name': 'California'},  # CA doesn't tax lottery
+    'MA': {'federal': 0.24, 'state': 0.05, 'name': 'Massachusetts'}
+}
+
+# Timezones
+TIMEZONES = {
+    'OK': pytz.timezone('America/Chicago'),      # Central Time
+    'CA': pytz.timezone('America/Los_Angeles'),  # Pacific Time
+    'MA': pytz.timezone('America/New_York')      # Eastern Time
+}
+
+# Draw schedules (in Central Time)
+DRAW_SCHEDULES = {
+    'l4l': {'days': ['Mon', 'Thu'], 'time': '9:38 PM', 'name': 'Lucky for Life'},
+    'la':  {'days': ['Mon', 'Wed', 'Sat'], 'time': '10:00 PM', 'name': 'Lotto America'},
+    'pb':  {'days': ['Mon', 'Wed', 'Sat'], 'time': '9:59 PM', 'name': 'Powerball'},
+    'mm':  {'days': ['Tue', 'Fri'], 'time': '10:00 PM', 'name': 'Mega Millions'}
+}
 
 # Lottery configurations with best methods per lottery
 LOTTERY_CONFIG = {
@@ -32,7 +49,8 @@ LOTTERY_CONFIG = {
         'strategy_desc': 'Pick once, play FOREVER',
         'optimal_window': 400,
         'pattern_stability': 68.9,
-        'best_methods': ['position_frequency', 'proven_combos', 'constraint_filter'],
+        'best_methods': ['Position Frequency (40-44% stability)', 'Proven 3-Combos', 'Constraint Filter'],
+        'grand_prize': '$1,000/day for LIFE',
         'constraints': {
             'sum_range': (65, 175),
             'min_decades': 3,
@@ -40,7 +58,8 @@ LOTTERY_CONFIG = {
             'odd_range': (2, 3),
             'high_range': (2, 3),
             'high_threshold': 25
-        }
+        },
+        'color': '#ff47bb'
     },
     'la': {
         'name': 'Lotto America',
@@ -51,9 +70,10 @@ LOTTERY_CONFIG = {
         'main_count': 5,
         'strategy': 'HOLD',
         'strategy_desc': 'Pick once, play FOREVER',
-        'optimal_window': 400,
+        'optimal_window': 150,
         'pattern_stability': 60.0,
-        'best_methods': ['position_frequency', 'hot_10', 'constraint_filter'],
+        'best_methods': ['Hot-10 Method (2.6x improvement)', 'Position Frequency', 'Constraint Filter'],
+        'grand_prize': None,
         'constraints': {
             'sum_range': (71, 188),
             'min_decades': 2,
@@ -61,7 +81,8 @@ LOTTERY_CONFIG = {
             'odd_range': (2, 3),
             'high_range': (2, 3),
             'high_threshold': 27
-        }
+        },
+        'color': '#7DD3FC'
     },
     'pb': {
         'name': 'Powerball',
@@ -74,7 +95,8 @@ LOTTERY_CONFIG = {
         'strategy_desc': 'Pick once, review every ~2 years',
         'optimal_window': 100,
         'pattern_stability': 46.7,
-        'best_methods': ['position_frequency', 'momentum', 'constraint_filter'],
+        'best_methods': ['Position+Momentum (1.21x)', 'Hot Pair Anchor (1.20x)', 'Mod-512 Filter (1.20x)'],
+        'grand_prize': None,
         'constraints': {
             'sum_range': (80, 220),
             'min_decades': 3,
@@ -82,7 +104,8 @@ LOTTERY_CONFIG = {
             'odd_range': (2, 3),
             'high_range': (2, 3),
             'high_threshold': 35
-        }
+        },
+        'color': '#E31B23'
     },
     'mm': {
         'name': 'Mega Millions',
@@ -95,7 +118,8 @@ LOTTERY_CONFIG = {
         'strategy_desc': 'Pick fresh EACH draw',
         'optimal_window': 30,
         'pattern_stability': None,
-        'best_methods': ['hot_numbers', 'repeat_likelihood', 'momentum'],
+        'best_methods': ['Hot Numbers', 'Repeat Likelihood (35-48%)', 'Momentum Analysis'],
+        'grand_prize': None,
         'constraints': {
             'sum_range': (100, 220),
             'min_decades': 3,
@@ -103,9 +127,13 @@ LOTTERY_CONFIG = {
             'odd_range': (2, 3),
             'high_range': (2, 3),
             'high_threshold': 36
-        }
+        },
+        'color': '#C0C0C0'
     }
 }
+
+# SVG Heart icon (perfect heart shape)
+HEART_SVG = '''<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" fill="#ff47bb"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>'''
 
 def load_draws(lottery):
     """Load historical draws for a lottery."""
@@ -114,7 +142,9 @@ def load_draws(lottery):
         if path.exists():
             with open(path, encoding='utf-8') as f:
                 data = json.load(f)
-                return data.get('draws', data) if isinstance(data, dict) else data
+                if isinstance(data, dict):
+                    return data.get('draws', [])
+                return data
     return []
 
 def load_jackpots():
@@ -128,8 +158,8 @@ def load_jackpots():
 
 def format_money(amount):
     """Format money with appropriate suffix."""
-    if not amount:
-        return 'N/A'
+    if not amount or amount <= 0:
+        return None
     if amount >= 1_000_000_000:
         return f"${amount / 1_000_000_000:.2f}B"
     elif amount >= 1_000_000:
@@ -139,11 +169,67 @@ def format_money(amount):
     else:
         return f"${amount:,}"
 
-def calculate_after_tax(cash_value):
-    """Calculate after-tax amount for Oklahoma winner."""
+def calculate_after_tax(cash_value, state='OK'):
+    """Calculate after-tax amount for a specific state."""
     if not cash_value or cash_value <= 0:
         return 0
-    return int(cash_value * (1 - TOTAL_TAX_RATE))
+    rates = TAX_RATES.get(state, TAX_RATES['OK'])
+    total_rate = rates['federal'] + rates['state']
+    return int(cash_value * (1 - total_rate))
+
+def get_times_string():
+    """Get current time in all three timezones."""
+    now_utc = datetime.now(pytz.UTC)
+    
+    times = []
+    for state, tz in TIMEZONES.items():
+        local_time = now_utc.astimezone(tz)
+        time_str = local_time.strftime('%I:%M %p')
+        state_name = TAX_RATES[state]['name']
+        times.append(f"{state_name}: {time_str}")
+    
+    return ' | '.join(times)
+
+def get_next_draw_info(lottery):
+    """Calculate next draw date and countdown."""
+    schedule = DRAW_SCHEDULES.get(lottery)
+    if not schedule:
+        return None, None
+    
+    now = datetime.now(TIMEZONES['OK'])
+    days_map = {'Mon': 0, 'Tue': 1, 'Wed': 2, 'Thu': 3, 'Fri': 4, 'Sat': 5, 'Sun': 6}
+    
+    draw_days = [days_map[d] for d in schedule['days']]
+    current_day = now.weekday()
+    
+    # Find next draw day
+    days_until = None
+    for d in sorted(draw_days):
+        if d > current_day:
+            days_until = d - current_day
+            break
+    if days_until is None:
+        days_until = 7 - current_day + min(draw_days)
+    
+    # Check if draw is today and hasn't happened yet
+    if current_day in draw_days:
+        draw_hour = int(schedule['time'].split(':')[0])
+        if 'PM' in schedule['time'] and draw_hour != 12:
+            draw_hour += 12
+        if now.hour < draw_hour:
+            days_until = 0
+    
+    next_draw = now + timedelta(days=days_until)
+    next_draw_str = next_draw.strftime('%A, %B %d')
+    
+    if days_until == 0:
+        countdown = f"TODAY at {schedule['time']} CT"
+    elif days_until == 1:
+        countdown = f"TOMORROW at {schedule['time']} CT"
+    else:
+        countdown = f"In {days_until} days"
+    
+    return next_draw_str, countdown
 
 def generate_position_pools(draws, main_count=5, window=400):
     """Generate position frequency pools from historical draws."""
@@ -187,8 +273,10 @@ def get_last_draw_numbers(draws):
 
 def generate_newsletter_html(draws_by_lottery, jackpots):
     """Generate the full newsletter HTML matching lottery tracker styling."""
-    current_time = datetime.now().strftime('%B %d, %Y at %I:%M %p')
-    current_date = datetime.now().strftime('%B %d, %Y')
+    now_utc = datetime.now(pytz.UTC)
+    ok_time = now_utc.astimezone(TIMEZONES['OK'])
+    current_date = ok_time.strftime('%B %d, %Y')
+    times_str = get_times_string()
     
     html = f'''<!DOCTYPE html>
 <html lang="en">
@@ -233,7 +321,7 @@ def generate_newsletter_html(draws_by_lottery, jackpots):
         }}
         
         .container {{
-            max-width: 900px;
+            max-width: 1000px;
             margin: 0 auto;
             position: relative;
             z-index: 2;
@@ -247,6 +335,19 @@ def generate_newsletter_html(draws_by_lottery, jackpots):
             text-align: center;
             margin-bottom: 25px;
             box-shadow: 0 8px 32px rgba(255, 71, 187, 0.4);
+        }}
+        
+        .heart-icon {{
+            display: inline-block;
+            width: 28px;
+            height: 28px;
+            vertical-align: middle;
+            margin: 0 8px;
+        }}
+        
+        .heart-icon svg {{
+            width: 100%;
+            height: 100%;
         }}
         
         h1 {{
@@ -265,18 +366,19 @@ def generate_newsletter_html(draws_by_lottery, jackpots):
             font-size: 1.2em;
             color: #ff47bb;
             font-style: italic;
+            margin-bottom: 15px;
         }}
         
-        .date-badge {{
+        .times-bar {{
             background: linear-gradient(135deg, #B0E0E6 0%, #7DD3FC 100%);
             border: 3px solid #7DD3FC;
             border-radius: 20px;
-            padding: 10px 25px;
+            padding: 12px 25px;
             display: inline-block;
-            margin-top: 15px;
             font-family: 'Libre Baskerville', serif;
             font-weight: 700;
             color: #000;
+            font-size: 0.95em;
         }}
         
         .section {{
@@ -298,51 +400,73 @@ def generate_newsletter_html(draws_by_lottery, jackpots):
             text-align: center;
         }}
         
+        .lottery-grid {{
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+        }}
+        
+        @media (max-width: 768px) {{
+            .lottery-grid {{ grid-template-columns: 1fr; }}
+        }}
+        
         .lottery-card {{
             background: linear-gradient(135deg, #fff0f5 0%, #f0f8ff 100%);
-            border: 3px solid #7DD3FC;
+            border: 4px solid;
             border-radius: 20px;
             padding: 20px;
-            margin: 20px 0;
-            box-shadow: 0 4px 15px rgba(125, 211, 252, 0.3);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
         }}
+        
+        .lottery-card.l4l {{ border-color: #ff47bb; }}
+        .lottery-card.la {{ border-color: #7DD3FC; }}
+        .lottery-card.pb {{ border-color: #E31B23; }}
+        .lottery-card.mm {{ border-color: #C0C0C0; }}
         
         .lottery-header {{
             display: flex;
-            justify-content: space-between;
             align-items: center;
-            flex-wrap: wrap;
             gap: 10px;
             margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px dashed rgba(0,0,0,0.1);
         }}
         
         .lottery-name {{
             font-family: 'Playfair Display', serif;
-            font-size: 1.5em;
+            font-size: 1.4em;
             color: #ff47bb;
+            flex-grow: 1;
         }}
         
-        .strategy-badge {{
-            background: linear-gradient(135deg, #ff47bb 0%, #ff75cc 100%);
-            color: white;
-            padding: 6px 15px;
-            border-radius: 15px;
+        .draw-schedule {{
             font-size: 0.85em;
-            font-weight: bold;
+            color: #ff47bb;
+            font-weight: 600;
+            margin-bottom: 8px;
         }}
         
-        .strategy-badge.next-draw {{
-            background: linear-gradient(135deg, #7DD3FC 0%, #B0E0E6 100%);
-            color: #000;
-        }}
-        
-        .jackpot-info {{
-            background: linear-gradient(135deg, #32CD32 0%, #228B22 100%);
-            color: white;
-            padding: 8px 15px;
+        .countdown {{
+            background: linear-gradient(135deg, #FFEB3B 0%, #FFD700 100%);
+            border: 3px solid #FFD700;
             border-radius: 15px;
-            font-weight: bold;
-            font-size: 0.9em;
+            padding: 10px;
+            text-align: center;
+            font-weight: 700;
+            margin-bottom: 12px;
+            font-size: 0.95em;
+        }}
+        
+        .countdown.soon {{
+            background: linear-gradient(135deg, #ff47bb 0%, #ff75cc 100%);
+            border-color: #ff47bb;
+            color: white;
+            animation: pulse 1s ease-in-out infinite;
+        }}
+        
+        @keyframes pulse {{
+            0%, 100% {{ transform: scale(1); }}
+            50% {{ transform: scale(1.02); }}
         }}
         
         .numbers-row {{
@@ -350,7 +474,8 @@ def generate_newsletter_html(draws_by_lottery, jackpots):
             flex-wrap: wrap;
             gap: 8px;
             align-items: center;
-            margin: 15px 0;
+            margin: 12px 0;
+            justify-content: center;
         }}
         
         .ball {{
@@ -362,22 +487,16 @@ def generate_newsletter_html(draws_by_lottery, jackpots):
             justify-content: center;
             font-weight: bold;
             font-size: 16px;
-            background: linear-gradient(135deg, #ffffff 0%, #f8f8f8 100%);
-            border: 3px solid #ff47bb;
-            color: #c2185b;
-            box-shadow: 0 3px 10px rgba(255, 71, 187, 0.25);
+            background: linear-gradient(135deg, #7DD3FC 0%, #B0E0E6 100%);
+            border: 3px solid rgba(0,0,0,0.2);
+            color: #000;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.15);
         }}
         
         .ball.bonus {{
-            background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%);
-            border-color: #FF8C00;
-            color: #5d4037;
-        }}
-        
-        .ball.green {{
-            background: linear-gradient(135deg, #90EE90 0%, #32CD32 100%);
-            border-color: #228B22;
-            color: #1b5e20;
+            background: linear-gradient(135deg, #ff47bb 0%, #ff75cc 100%);
+            border-color: #ff47bb;
+            color: white;
         }}
         
         .plus {{
@@ -387,10 +506,52 @@ def generate_newsletter_html(draws_by_lottery, jackpots):
             font-weight: bold;
         }}
         
-        .draw-info {{
+        .draw-date {{
             font-size: 0.9em;
             color: #666;
-            margin-top: 5px;
+            text-align: center;
+            margin-top: 8px;
+        }}
+        
+        .jackpot-section {{
+            background: linear-gradient(135deg, #87CEEB 0%, #B0E0E6 100%);
+            border: 3px solid #87CEEB;
+            border-radius: 15px;
+            padding: 15px;
+            margin: 12px 0;
+            text-align: center;
+        }}
+        
+        .jackpot-amount {{
+            font-size: 1.8em;
+            font-weight: 700;
+            background: linear-gradient(135deg, #E31B23 0%, #ff47bb 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-family: 'Playfair Display', serif;
+        }}
+        
+        .jackpot-details {{
+            font-size: 0.85em;
+            color: #333;
+            margin-top: 8px;
+        }}
+        
+        .strategy-badge {{
+            background: linear-gradient(135deg, #ff47bb 0%, #ff75cc 100%);
+            color: white;
+            padding: 6px 15px;
+            border-radius: 15px;
+            font-size: 0.8em;
+            font-weight: bold;
+            display: inline-block;
+            margin-bottom: 10px;
+        }}
+        
+        .strategy-badge.next-draw {{
+            background: linear-gradient(135deg, #7DD3FC 0%, #B0E0E6 100%);
+            color: #000;
         }}
         
         .pool-section {{
@@ -410,31 +571,32 @@ def generate_newsletter_html(draws_by_lottery, jackpots):
         }}
         
         .pool-row {{
-            margin: 10px 0;
+            margin: 8px 0;
             display: flex;
             align-items: center;
             flex-wrap: wrap;
-            gap: 8px;
+            gap: 6px;
         }}
         
         .pool-label {{
             font-weight: bold;
             color: #c2185b;
-            min-width: 90px;
+            min-width: 85px;
+            font-size: 0.9em;
         }}
         
         .pool-numbers {{
             display: flex;
             flex-wrap: wrap;
-            gap: 6px;
+            gap: 5px;
         }}
         
         .pool-num {{
             background: linear-gradient(135deg, #B0E0E6 0%, #7DD3FC 100%);
             color: #01579b;
-            padding: 5px 12px;
-            border-radius: 15px;
-            font-size: 0.95em;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 0.85em;
             font-weight: bold;
             border: 2px solid #7DD3FC;
         }}
@@ -451,19 +613,34 @@ def generate_newsletter_html(draws_by_lottery, jackpots):
             color: #1b5e20;
         }}
         
-        .constraints-box {{
+        .methods-box {{
             background: #fffaf0;
             border: 2px solid #ffa500;
             border-radius: 12px;
             padding: 12px;
-            margin-top: 15px;
-            font-size: 0.9em;
+            margin-top: 12px;
+            font-size: 0.85em;
+        }}
+        
+        .methods-title {{
+            color: #ff8c00;
+            font-weight: bold;
+            margin-bottom: 6px;
+        }}
+        
+        .constraints-box {{
+            background: #f0fff0;
+            border: 2px solid #32CD32;
+            border-radius: 12px;
+            padding: 12px;
+            margin-top: 12px;
+            font-size: 0.85em;
         }}
         
         .constraints-title {{
-            color: #ff8c00;
+            color: #228B22;
             font-weight: bold;
-            margin-bottom: 8px;
+            margin-bottom: 6px;
         }}
         
         .how-to-box {{
@@ -525,32 +702,32 @@ def generate_newsletter_html(draws_by_lottery, jackpots):
             color: #666;
             font-size: 0.9em;
         }}
-        
-        @media (max-width: 600px) {{
-            h1 {{ font-size: 2em; }}
-            .ball {{ width: 38px; height: 38px; font-size: 14px; }}
-            .lottery-header {{ flex-direction: column; align-items: flex-start; }}
-        }}
     </style>
 </head>
 <body>
     <div class="container">
         <div class="header">
-            <h1>💖 LOTTERY NEWS 💖</h1>
-            <p class="subtitle">Build Your Own Lucky Numbers</p>
-            <div class="date-badge">📅 {current_date}</div>
+            <h1>
+                <span class="heart-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#ff47bb"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg></span>
+                LOTTERY NEWS
+                <span class="heart-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#ff47bb"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg></span>
+            </h1>
+            <p class="subtitle">Build Your Own Lucky Numbers with Data-Driven Pools</p>
+            <div class="times-bar">📅 {current_date} | 🕐 {times_str}</div>
         </div>
         
         <!-- LATEST DRAWINGS -->
         <div class="section">
             <h2 class="section-title">🎱 Latest Drawing Results</h2>
+            <div class="lottery-grid">
 '''
     
-    # Add latest drawings for each lottery
+    # Add lottery cards
     for lottery_key in ['l4l', 'la', 'pb', 'mm']:
         config = LOTTERY_CONFIG[lottery_key]
         draws = draws_by_lottery.get(lottery_key, [])
         jp = jackpots.get(lottery_key, {})
+        schedule = DRAW_SCHEDULES.get(lottery_key, {})
         
         if not draws:
             continue
@@ -560,32 +737,61 @@ def generate_newsletter_html(draws_by_lottery, jackpots):
         bonus = latest.get('bonus', '?')
         draw_date = latest.get('date', 'Unknown')
         
+        # Draw info
+        next_draw, countdown = get_next_draw_info(lottery_key)
+        draw_days = ', '.join(schedule.get('days', []))
+        
+        # Jackpot info
         cash = jp.get('cash_value', 0)
-        after_tax = calculate_after_tax(cash)
-        jackpot_str = format_money(after_tax)
+        jackpot_html = ''
+        
+        if config.get('grand_prize'):
+            jackpot_html = f'''
+                <div class="jackpot-section">
+                    <div class="jackpot-amount">{config['grand_prize']}</div>
+                    <div class="jackpot-details">Top Prize</div>
+                </div>
+'''
+        elif cash and cash > 0:
+            ok_after = calculate_after_tax(cash, 'OK')
+            ca_after = calculate_after_tax(cash, 'CA')
+            ma_after = calculate_after_tax(cash, 'MA')
+            
+            jackpot_html = f'''
+                <div class="jackpot-section">
+                    <div class="jackpot-amount">{format_money(jp.get('jackpot', cash))}</div>
+                    <div class="jackpot-details">
+                        <strong>After-Tax Cash:</strong><br>
+                        🌵 CA: {format_money(ca_after)} | 
+                        🍀 MA: {format_money(ma_after)} | 
+                        🤠 OK: {format_money(ok_after)}
+                    </div>
+                </div>
+'''
         
         balls_html = ''.join([f'<span class="ball">{n}</span>' for n in main_nums])
         
-        strategy_class = 'next-draw' if config['strategy'] == 'NEXT_DRAW' else ''
+        countdown_class = 'soon' if countdown and 'TODAY' in countdown else ''
         
         html += f'''
-            <div class="lottery-card">
-                <div class="lottery-header">
-                    <span class="lottery-name">{config['emoji']} {config['name']}</span>
-                    <span class="strategy-badge {strategy_class}">{config['strategy_desc']}</span>
-                    <span class="jackpot-info">💰 {jackpot_str} after tax</span>
+                <div class="lottery-card {lottery_key}">
+                    <div class="lottery-header">
+                        <span class="lottery-name">{config['emoji']} {config['name']}</span>
+                    </div>
+                    <div class="draw-schedule">📆 Draws: {draw_days} at {schedule.get('time', 'TBD')} CT</div>
+                    <div class="countdown {countdown_class}">⏰ Next: {countdown or 'TBD'}</div>
+                    {jackpot_html}
+                    <div class="numbers-row">
+                        {balls_html}
+                        <span class="plus">+</span>
+                        <span class="ball bonus">{bonus}</span>
+                    </div>
+                    <div class="draw-date">📅 Last Draw: {draw_date}</div>
                 </div>
-                <div class="numbers-row">
-                    {balls_html}
-                    <span class="plus">+</span>
-                    <span class="ball bonus">{bonus}</span>
-                    <span style="margin-left: 10px; color: #666;">{config['bonus_name']}</span>
-                </div>
-                <div class="draw-info">📅 Draw Date: {draw_date}</div>
-            </div>
 '''
     
     html += '''
+            </div>
         </div>
         
         <!-- HOW TO BUILD YOUR TICKET -->
@@ -597,7 +803,7 @@ def generate_newsletter_html(draws_by_lottery, jackpots):
                 <ul class="how-to-list">
                     <li><strong>Pick 1 number</strong> from each Position Pool (1-5)</li>
                     <li><strong>Pick 1 bonus</strong> from the Bonus Pool</li>
-                    <li><strong>Verify</strong> your ticket passes the constraints</li>
+                    <li><strong>Verify</strong> your ticket passes the constraints below</li>
                     <li><strong>Play the SAME ticket</strong> every draw - patterns are stable!</li>
                 </ul>
             </div>
@@ -618,7 +824,7 @@ def generate_newsletter_html(draws_by_lottery, jackpots):
             <h2 class="section-title">🔢 Number Pools By Lottery</h2>
 '''
     
-    # Add pools for each lottery
+    # Add detailed pools for each lottery
     for lottery_key in ['l4l', 'la', 'pb', 'mm']:
         config = LOTTERY_CONFIG[lottery_key]
         draws = draws_by_lottery.get(lottery_key, [])
@@ -634,13 +840,14 @@ def generate_newsletter_html(draws_by_lottery, jackpots):
         constraints = config['constraints']
         
         strategy_class = 'next-draw' if config['strategy'] == 'NEXT_DRAW' else ''
+        stability_str = f"{config['pattern_stability']}% stable" if config['pattern_stability'] else 'Use NEXT DRAW method'
         
         html += f'''
-            <div class="lottery-card">
+            <div class="lottery-card {lottery_key}" style="margin: 20px 0;">
                 <div class="lottery-header">
                     <span class="lottery-name">{config['emoji']} {config['name']}</span>
-                    <span class="strategy-badge {strategy_class}">{config['strategy_desc']}</span>
                 </div>
+                <div class="strategy-badge {strategy_class}">{config['strategy_desc']} ({stability_str})</div>
                 
                 <div class="pool-section">
                     <div class="pool-title">📊 Position Pools (pick 1 from each)</div>
@@ -657,7 +864,7 @@ def generate_newsletter_html(draws_by_lottery, jackpots):
         
         bonus_html = ''.join([f'<span class="pool-num">{n}</span>' for n in bonus_pool])
         html += f'''
-                    <div class="pool-row" style="margin-top: 15px; padding-top: 10px; border-top: 1px dashed #F9A8D4;">
+                    <div class="pool-row" style="margin-top: 12px; padding-top: 10px; border-top: 1px dashed #F9A8D4;">
                         <span class="pool-label">{config['bonus_name']}:</span>
                         <div class="pool-numbers">{bonus_html}</div>
                     </div>
@@ -675,17 +882,22 @@ def generate_newsletter_html(draws_by_lottery, jackpots):
                 </div>
                 
                 <div class="pool-section">
-                    <div class="pool-title">🔄 Last Draw (35-48% repeat rate!)</div>
+                    <div class="pool-title">🔄 Last Draw Numbers (35-48% repeat rate!)</div>
                     <div class="pool-numbers">{last_html}</div>
                 </div>
                 
+                <div class="methods-box">
+                    <div class="methods-title">🧪 Best Methods for {config['name']}</div>
+                    <div>{'  •  '.join(config['best_methods'])}</div>
+                </div>
+                
                 <div class="constraints-box">
-                    <div class="constraints-title">✅ Ticket Constraints (verify your pick!)</div>
-                    <div>• <strong>Sum Range:</strong> {constraints['sum_range'][0]} - {constraints['sum_range'][1]}</div>
-                    <div>• <strong>Decades:</strong> At least {constraints['min_decades']} different (1-10, 11-20, etc.)</div>
-                    <div>• <strong>Consecutive:</strong> Max {constraints['max_consecutive']} pair (like 12-13)</div>
-                    <div>• <strong>Odd Numbers:</strong> {constraints['odd_range'][0]}-{constraints['odd_range'][1]} recommended</div>
-                    <div>• <strong>High Numbers:</strong> {constraints['high_range'][0]}-{constraints['high_range'][1]} above {constraints['high_threshold']}</div>
+                    <div class="constraints-title">✅ Verify Your Ticket</div>
+                    <div>• <strong>Sum:</strong> {constraints['sum_range'][0]} - {constraints['sum_range'][1]}</div>
+                    <div>• <strong>Decades:</strong> At least {constraints['min_decades']} different</div>
+                    <div>• <strong>Consecutive:</strong> Max {constraints['max_consecutive']} pair</div>
+                    <div>• <strong>Odd/Even:</strong> {constraints['odd_range'][0]}-{constraints['odd_range'][1]} odd numbers</div>
+                    <div>• <strong>High ({constraints['high_threshold']}+):</strong> {constraints['high_range'][0]}-{constraints['high_range'][1]} numbers</div>
                 </div>
             </div>
 '''
@@ -695,7 +907,11 @@ def generate_newsletter_html(draws_by_lottery, jackpots):
         
         <!-- CTA -->
         <div class="cta-box">
-            <h3>✨ Want Live Analysis? ✨</h3>
+            <h3>
+                <span class="heart-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg></span>
+                Want Live Analysis?
+                <span class="heart-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg></span>
+            </h3>
             <p>Join us on Twitch and YouTube for drawing breakdowns!</p>
             <p style="margin-top: 12px; font-size: 1.1em;">
                 <a href="https://twitch.tv/princessupload">📺 Twitch</a> &nbsp;|&nbsp; 
@@ -704,9 +920,16 @@ def generate_newsletter_html(draws_by_lottery, jackpots):
         </div>
         
         <div class="footer">
-            <p>💖 With love from Princess Upload 💖</p>
-            <p style="margin-top: 8px; font-size: 0.85em;">
-                🎰 For entertainment purposes only • Generated {current_time} CT (Oklahoma)
+            <p>
+                <span class="heart-icon" style="width: 20px; height: 20px;"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#ff47bb"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg></span>
+                With love from Princess Upload
+                <span class="heart-icon" style="width: 20px; height: 20px;"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#ff47bb"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg></span>
+            </p>
+            <p style="margin-top: 10px; font-size: 0.85em; color: #888;">
+                🎰 For entertainment purposes only
+            </p>
+            <p style="margin-top: 5px; font-size: 0.8em; color: #aaa;">
+                Generated: {times_str}
             </p>
         </div>
     </div>
@@ -717,10 +940,16 @@ def generate_newsletter_html(draws_by_lottery, jackpots):
 
 def generate_embed_snippet(draws_by_lottery, jackpots):
     """Generate simple embeddable HTML for Patreon/Substack."""
-    current_date = datetime.now().strftime('%B %d, %Y')
+    now_utc = datetime.now(pytz.UTC)
+    ok_time = now_utc.astimezone(TIMEZONES['OK'])
+    current_date = ok_time.strftime('%B %d, %Y')
     
     snippet = f'''<div style="font-family: Georgia, serif; max-width: 650px; margin: 0 auto; padding: 25px; background: linear-gradient(135deg, #fff0f5 0%, #f0f8ff 100%); border: 4px solid #ff47bb; border-radius: 20px;">
-    <h2 style="color: #ff47bb; text-align: center; margin-bottom: 20px; font-size: 1.6em;">💖 LOTTERY UPDATE - {current_date} 💖</h2>
+    <h2 style="color: #ff47bb; text-align: center; margin-bottom: 20px; font-size: 1.6em;">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" fill="#ff47bb" style="vertical-align: middle;"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+        LOTTERY UPDATE - {current_date}
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" fill="#ff47bb" style="vertical-align: middle;"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+    </h2>
     
     <p style="text-align: center; margin-bottom: 20px; color: #666;">Build your own unique ticket using these data-driven pools!</p>
 '''
@@ -738,23 +967,29 @@ def generate_embed_snippet(draws_by_lottery, jackpots):
         bonus = latest.get('bonus', '?')
         
         cash = jp.get('cash_value', 0)
-        after_tax = calculate_after_tax(cash)
+        jackpot_str = ''
+        if config.get('grand_prize'):
+            jackpot_str = config['grand_prize']
+        elif cash and cash > 0:
+            jackpot_str = format_money(calculate_after_tax(cash, 'OK')) + ' (OK after tax)'
         
-        position_pools = generate_position_pools(draws, config['main_count'], config['optimal_window'])
         hot_numbers = get_hot_numbers(draws, window=20)[:6]
         
         nums_str = ' - '.join(map(str, main_nums))
-        pools_str = ' | '.join([', '.join(map(str, p[:5])) for p in position_pools])
         hot_str = ', '.join(map(str, hot_numbers))
+        
+        jackpot_badge = ''
+        if jackpot_str:
+            jackpot_badge = f'<span style="float: right; background: #32CD32; color: white; padding: 4px 10px; border-radius: 12px; font-size: 0.8em;">{jackpot_str}</span>'
         
         snippet += f'''
     <div style="background: white; border: 3px solid #7DD3FC; border-radius: 15px; padding: 15px; margin: 15px 0;">
-        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; margin-bottom: 10px;">
+        <div style="margin-bottom: 10px;">
             <strong style="color: #ff47bb; font-size: 1.2em;">{config['emoji']} {config['name']}</strong>
-            <span style="background: #32CD32; color: white; padding: 4px 12px; border-radius: 12px; font-size: 0.85em;">{format_money(after_tax)}</span>
+            {jackpot_badge}
         </div>
-        <div style="margin: 10px 0;">
-            <strong>Latest:</strong> {nums_str} + <span style="background: #FFD700; padding: 2px 8px; border-radius: 50%;">{bonus}</span>
+        <div style="margin: 10px 0; font-size: 1.1em;">
+            <strong>Latest:</strong> {nums_str} + <span style="background: linear-gradient(135deg, #ff47bb, #ff75cc); color: white; padding: 3px 8px; border-radius: 50%;">{bonus}</span>
         </div>
         <div style="font-size: 0.9em; color: #444; margin-top: 10px;">
             <div><strong>🔥 Hot:</strong> {hot_str}</div>
@@ -765,8 +1000,10 @@ def generate_embed_snippet(draws_by_lottery, jackpots):
     
     snippet += '''
     <p style="text-align: center; margin-top: 20px; font-size: 0.95em;">
-        💖 <a href="https://twitch.tv/princessupload" style="color: #ff47bb;">Twitch</a> | 
-        <a href="https://youtube.com/@princessuploadie" style="color: #ff47bb;">YouTube</a> 💖
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18" height="18" fill="#ff47bb" style="vertical-align: middle;"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+        <a href="https://twitch.tv/princessupload" style="color: #ff47bb;">Twitch</a> | 
+        <a href="https://youtube.com/@princessuploadie" style="color: #ff47bb;">YouTube</a>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18" height="18" fill="#ff47bb" style="vertical-align: middle;"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
     </p>
     <p style="text-align: center; font-size: 0.8em; color: #888; margin-top: 10px;">For entertainment purposes only</p>
 </div>'''
@@ -787,7 +1024,10 @@ def main():
     
     # Generate full newsletter
     full_html = generate_newsletter_html(draws_by_lottery, jackpots)
-    date_str = datetime.now().strftime('%Y-%m-%d')
+    
+    now_utc = datetime.now(pytz.UTC)
+    ok_time = now_utc.astimezone(TIMEZONES['OK'])
+    date_str = ok_time.strftime('%Y-%m-%d')
     
     # Save dated version
     dated_file = OUTPUT_DIR / f'newsletter_{date_str}.html'
