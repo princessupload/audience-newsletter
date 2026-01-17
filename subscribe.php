@@ -144,6 +144,20 @@ switch ($action) {
         $subscribers = load_emails($subscribers_file);
         echo json_encode(['count' => count($subscribers)]);
         break;
+    
+    case 'list':
+        // Protected list action - requires secret key
+        $key = isset($_GET['key']) ? $_GET['key'] : (isset($_POST['key']) ? $_POST['key'] : '');
+        $secret_key = getenv('SUBSCRIBER_KEY') ?: 'lottery_newsletter_2026_secret';
+        
+        if ($key !== $secret_key) {
+            echo json_encode(['success' => false, 'message' => 'Unauthorized']);
+            exit;
+        }
+        
+        $subscribers = load_emails($subscribers_file);
+        echo json_encode(['success' => true, 'subscribers' => $subscribers]);
+        break;
         
     default:
         // Show simple HTML form for direct access
