@@ -149,12 +149,26 @@ def load_draws(lottery):
     return []
 
 def load_jackpots():
-    """Load current jackpot data."""
+    """Load current jackpot data and normalize keys."""
     for filename in ['jackpots.json', 'jackpot_data.json']:
         path = DATA_DIR / filename
         if path.exists():
             with open(path, encoding='utf-8') as f:
-                return json.load(f)
+                raw = json.load(f)
+            # Normalize keys: uppercase -> lowercase, cashValue -> cash_value
+            normalized = {}
+            for key, val in raw.items():
+                if key == 'lastUpdated':
+                    continue
+                lkey = key.lower()
+                if isinstance(val, dict):
+                    normalized[lkey] = {
+                        'jackpot': val.get('amount', ''),
+                        'cash_value': val.get('cashValue', 0),
+                        'next_draw': val.get('nextDraw', ''),
+                        'schedule': val.get('schedule', '')
+                    }
+            return normalized
     return {}
 
 def format_money(amount):
@@ -784,13 +798,13 @@ def generate_newsletter_html(draws_by_lottery, jackpots):
                 </div>
 '''
         else:
-            jackpot_amt = jp.get('jackpot', 0)
+            jackpot_str = jp.get('jackpot', '')  # Already formatted string like "$179M"
             cash = jp.get('cash_value', 0)
-            if jackpot_amt and jackpot_amt > 0:
+            if jackpot_str or cash:
                 after_tax = calculate_after_tax(cash, 'OK') if cash else 0
                 jackpot_html = f'''
                 <div class="jackpot-section">
-                    <div class="jackpot-amount">{format_money(jackpot_amt)}</div>
+                    <div class="jackpot-amount">{jackpot_str or format_money(cash)}</div>
                     <div class="jackpot-details">
                         <div><strong>Cash Option:</strong> {format_money(cash) if cash else 'TBD'}</div>
                         <div><strong>After Taxes (24% Fed + 4.75% OK):</strong> {format_money(after_tax) if after_tax else 'TBD'}</div>
