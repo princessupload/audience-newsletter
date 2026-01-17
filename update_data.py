@@ -16,56 +16,64 @@ import xml.etree.ElementTree as ET
 
 DATA_DIR = Path(__file__).parent / 'data'
 
-# Data sources configuration
+# Data sources configuration - Oklahoma Lottery added as reliable backup
 SOURCES = {
     'l4l': {
         'primary': {
-            'name': 'CT Lottery RSS',
-            'url': 'https://www.ctlottery.org/Modules/Games/RSS.aspx?game=Lucky4Life',
-            'type': 'rss'
+            'name': 'Oklahoma Lottery',
+            'url': 'https://www.lottery.ok.gov/draw-games/lucky-for-life',
+            'type': 'oklahoma_html'
         },
         'secondary': {
-            'name': 'lotto.net',
-            'url': 'https://www.lotto.net/lucky-for-life/results',
-            'type': 'html'
+            'name': 'CT Lottery RSS',
+            'url': 'https://www.ctlottery.org/Feeds/rssnumbers.xml',
+            'type': 'ct_rss'
         }
     },
     'la': {
         'primary': {
+            'name': 'Oklahoma Lottery',
+            'url': 'https://www.lottery.ok.gov/draw-games/lotto-america',
+            'type': 'oklahoma_html'
+        },
+        'secondary': {
             'name': 'Iowa Lottery',
             'url': 'https://ialottery.com/LottoAmerica',
             'type': 'iowa_html'
-        },
-        'secondary': {
-            'name': 'lotto.net',
-            'url': 'https://www.lotto.net/lotto-america/results',
-            'type': 'html'
         }
     },
     'pb': {
         'primary': {
-            'name': 'CT Lottery RSS',
-            'url': 'https://www.ctlottery.org/Modules/Games/RSS.aspx?game=Powerball',
-            'type': 'rss'
+            'name': 'Oklahoma Lottery',
+            'url': 'https://www.lottery.ok.gov/draw-games/powerball',
+            'type': 'oklahoma_html'
         },
         'secondary': {
-            'name': 'Iowa Lottery',
-            'url': 'https://ialottery.com/Powerball',
-            'type': 'iowa_html'
+            'name': 'CT Lottery RSS',
+            'url': 'https://www.ctlottery.org/Feeds/rssnumbers.xml',
+            'type': 'ct_rss'
         }
     },
     'mm': {
         'primary': {
-            'name': 'NY Open Data',
-            'url': 'https://data.ny.gov/api/views/5xaw-6ayf/rows.csv?accessType=DOWNLOAD',
-            'type': 'csv'
+            'name': 'Oklahoma Lottery',
+            'url': 'https://www.lottery.ok.gov/draw-games/mega-millions',
+            'type': 'oklahoma_html'
         },
         'secondary': {
-            'name': 'Iowa Lottery',
-            'url': 'https://ialottery.com/MegaMillions',
-            'type': 'iowa_html'
+            'name': 'Virginia Lottery',
+            'url': 'https://www.valottery.com/data/draw-games/megamillions',
+            'type': 'virginia_html'
         }
     }
+}
+
+# Oklahoma Lottery jackpot URLs
+OKLAHOMA_JACKPOT_URLS = {
+    'l4l': 'https://www.lottery.ok.gov/draw-games/lucky-for-life',
+    'la': 'https://www.lottery.ok.gov/draw-games/lotto-america',
+    'pb': 'https://www.lottery.ok.gov/draw-games/powerball',
+    'mm': 'https://www.lottery.ok.gov/draw-games/mega-millions'
 }
 
 def fetch_url(url, accept_gzip=True):
@@ -115,6 +123,65 @@ def parse_rss_draw(content, lottery):
                     }
     except Exception as e:
         print(f"  ⚠️ RSS parse error: {e}")
+    return None
+
+def parse_oklahoma_html(content, lottery):
+    """Parse lottery draw from Oklahoma Lottery HTML (lottery.ok.gov)."""
+    try:
+        # Oklahoma shows winning numbers in spans with specific patterns
+        # Look for number balls - they use various class names
+        numbers = []
+        
+        # Pattern 1: Look for ball numbers in spans
+        ball_pattern = re.findall(r'class="[^"]*ball[^"]*"[^>]*>(\d{1,2})<', content, re.I)
+        if ball_pattern:
+            numbers = [int(n) for n in ball_pattern[:5]]
+        
+        # Pattern 2: Look for winning-number spans
+        if not numbers:
+            num_pattern = re.findall(r'class="[^"]*winning[^"]*number[^"]*"[^>]*>(\d{1,2})<', content, re.I)
+            if num_pattern:
+                numbers = [int(n) for n in num_pattern[:5]]
+        
+        # Pattern 3: General number extraction from result section
+        if not numbers:
+            result_match = re.search(r'result[^>]*>.*?(\d{1,2})[^\d]*(\d{1,2})[^\d]*(\d{1,2})[^\d]*(\d{1,2})[^\d]*(\d{1,2})', content, re.I | re.DOTALL)
+            if result_match:
+                numbers = [int(result_match.group(i)) for i in range(1, 6)]
+        
+        # Bonus ball - look for special ball class or powerball/megaball/luckyball/starball
+        bonus = None
+        bonus_patterns = [
+            r'(?:power|mega|lucky|star)[\s-]*ball[^>]*>(\d{1,2})<',
+            r'class="[^"]*bonus[^"]*"[^>]*>(\d{1,2})<',
+            r'class="[^"]*special[^"]*"[^>]*>(\d{1,2})<'
+        ]
+        for pattern in bonus_patterns:
+            bonus_match = re.search(pattern, content, re.I)
+            if bonus_match:
+                bonus = int(bonus_match.group(1))
+                break
+        
+        # If no bonus found, try getting 6th number from ball pattern
+        if not bonus and ball_pattern and len(ball_pattern) >= 6:
+            bonus = int(ball_pattern[5])
+        
+        # Date extraction
+        date_match = re.search(r'(\d{1,2})[/-](\d{1,2})[/-](\d{4})', content)
+        if date_match:
+            month, day, year = date_match.groups()
+            date_formatted = f"{year}-{month.zfill(2)}-{day.zfill(2)}"
+        else:
+            date_formatted = datetime.now().strftime('%Y-%m-%d')
+        
+        if numbers and len(numbers) >= 5:
+            return {
+                'date': date_formatted,
+                'main': sorted(numbers[:5]),
+                'bonus': bonus or 1
+            }
+    except Exception as e:
+        print(f"  ⚠️ Oklahoma HTML parse error: {e}")
     return None
 
 def parse_iowa_html(content, lottery):
@@ -228,10 +295,14 @@ def update_lottery(lottery):
     new_draw = None
     source_type = primary.get('type')
     
-    if source_type == 'rss':
+    if source_type == 'oklahoma_html':
+        new_draw = parse_oklahoma_html(content, lottery)
+    elif source_type == 'rss' or source_type == 'ct_rss':
         new_draw = parse_rss_draw(content, lottery)
     elif source_type == 'iowa_html':
         new_draw = parse_iowa_html(content, lottery)
+    elif source_type == 'virginia_html':
+        new_draw = parse_oklahoma_html(content, lottery)  # Similar format
     elif source_type == 'csv':
         new_draw = parse_ny_csv(content)
     

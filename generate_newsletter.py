@@ -285,7 +285,8 @@ def generate_position_pools(draws, main_count=5, window=400):
     pools = []
     for counter in position_counters:
         top_nums = [num for num, _ in counter.most_common(8)]
-        pools.append(top_nums)
+        # Sort by ascending number order (least to greatest) for easy selection
+        pools.append(sorted(top_nums))
     
     return pools
 
@@ -296,7 +297,8 @@ def generate_bonus_pool(draws, window=400, top_n=5):
         bonus = draw.get('bonus')
         if bonus:
             bonus_counter[bonus] += 1
-    return [num for num, _ in bonus_counter.most_common(top_n)]
+    # Sort by ascending number order (least to greatest) for easy selection
+    return sorted([num for num, _ in bonus_counter.most_common(top_n)])
 
 def get_hot_numbers(draws, window=20, top_n=10):
     """Get hot numbers from recent draws."""
