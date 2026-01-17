@@ -131,7 +131,8 @@
             body { padding: 10px; }
             .container { padding: 0 5px; }
             .header { padding: 20px 15px; border-radius: 20px; }
-            h1 { font-size: 1.8em; letter-spacing: 1px; }
+            h1 { font-size: 1.6em; letter-spacing: 1px; white-space: nowrap; }
+            .heart-icon { width: 20px; height: 20px; }
             .subtitle { font-size: 1em; }
             .times-bar { font-size: 0.8em; padding: 10px 15px; }
             .section { padding: 15px; border-radius: 20px; margin-bottom: 15px; }
@@ -146,14 +147,21 @@
             .pool-num { padding: 3px 8px; font-size: 0.8em; }
             .how-to-box { padding: 15px; }
             .footer { padding: 20px 15px; }
+            /* Mobile-friendly tables */
+            table { font-size: 0.8em !important; }
+            table th, table td { padding: 6px 4px !important; }
+            .backtest-table { display: block; overflow-x: auto; -webkit-overflow-scrolling: touch; }
         }
         
         @media (max-width: 480px) {
-            h1 { font-size: 1.5em; }
+            h1 { font-size: 1.3em; letter-spacing: 0; }
+            .heart-icon { width: 16px; height: 16px; margin: 0 4px; }
             .ball { width: 34px; height: 34px; font-size: 13px; }
             .jackpot-amount { font-size: 1.2em; }
             .lottery-name { font-size: 1.1em; }
             .section-title { font-size: 1.2em; }
+            table { font-size: 0.75em !important; }
+            table th, table td { padding: 4px 2px !important; }
         }
         
         .lottery-card {
@@ -459,7 +467,7 @@
                 <span class="heart-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#ff47bb"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg></span>
             </h1>
             <p class="subtitle">Build Your Own Tickets</p>
-            <div class="times-bar">📅 January 17, 2026 | 🕐 PT: 12:33 AM | CT: 02:33 AM | ET: 03:33 AM</div>
+            <div class="times-bar">📅 January 17, 2026 | 🕐 PT: 12:46 AM | CT: 02:46 AM | ET: 03:46 AM</div>
         </div>
         
         <!-- LATEST DRAWINGS -->
@@ -568,8 +576,9 @@
             
             <!-- KEY FINDING: HOLD BEATS NEXT PLAY -->
             <div style="background: linear-gradient(135deg, #fff3e0 0%, #ffe0b2 100%); border: 3px solid #ff9800; border-radius: 15px; padding: 20px; margin-bottom: 20px;">
-                <h3 style="color: #e65100; text-align: center; margin-bottom: 15px;">🏆 KEY FINDING: HOLD Tickets Are BETTER Than NEXT PLAY</h3>
-                <table style="width: 100%; border-collapse: collapse; font-size: 0.95em;">
+                <h3 style="color: #e65100; text-align: center; margin-bottom: 15px;">🏆 HOLD Tickets Beat NEXT PLAY</h3>
+                <div class="backtest-table" style="overflow-x: auto;">
+                <table style="width: 100%; border-collapse: collapse; font-size: 0.95em; min-width: 320px;">
                     <tr style="background: rgba(255,255,255,0.7);">
                         <th style="padding: 8px; text-align: left;">Lottery</th>
                         <th style="padding: 8px; text-align: center;">HOLD</th>
@@ -581,6 +590,7 @@
                     <tr><td style="padding: 6px;">🔴 Powerball</td><td style="text-align: center; font-weight: bold; color: #2e7d32;">2.46×</td><td style="text-align: center;">2.06×</td><td style="text-align: center;">✅ HOLD</td></tr>
                     <tr style="background: rgba(255,255,255,0.5);"><td style="padding: 6px;">💰 Mega Millions</td><td style="text-align: center; font-weight: bold; color: #2e7d32;">~2.5×</td><td style="text-align: center;">~1.6×</td><td style="text-align: center;">✅ HOLD</td></tr>
                 </table>
+                </div>
                 <p style="margin-top: 12px; text-align: center; color: #e65100; font-weight: bold;">📌 Pick ONE ticket per lottery and STICK WITH IT forever!</p>
             </div>
             
@@ -612,8 +622,9 @@
             
             <!-- VERIFIED IMPROVEMENT TABLE - HONEST NUMBERS FROM BACKTESTING -->
             <div style="background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%); border: 3px solid #4caf50; border-radius: 15px; padding: 20px; margin-bottom: 20px;">
-                <h3 style="color: #2e7d32; font-family: 'Playfair Display', serif; margin-bottom: 15px; text-align: center;">📈 Walk-Forward Backtested Results (Honest Numbers)</h3>
-                <table style="width: 100%; border-collapse: collapse; font-size: 0.95em;">
+                <h3 style="color: #2e7d32; font-family: 'Playfair Display', serif; margin-bottom: 15px; text-align: center;">📈 Walk-Forward Backtested Results</h3>
+                <div class="backtest-table" style="overflow-x: auto;">
+                <table style="width: 100%; border-collapse: collapse; font-size: 0.95em; min-width: 400px;">
                     <tr style="background: rgba(255,255,255,0.7);">
                         <th style="padding: 10px; text-align: left; border-bottom: 2px solid #4caf50;">Lottery</th>
                         <th style="padding: 10px; text-align: center; border-bottom: 2px solid #4caf50;">Pool Hit Rate</th>
@@ -645,6 +656,7 @@
                         <td style="padding: 10px; text-align: center;">Position Frequency</td>
                     </tr>
                 </table>
+                </div>
                 <p style="margin-top: 12px; text-align: center; color: #1b5e20; font-size: 0.85em;">*Tested on held-out data: Train on 80% older draws, test on 20% newer draws</p>
             </div>
             
@@ -920,7 +932,7 @@
                 🎰 For entertainment purposes only
             </p>
             <p style="margin-top: 5px; font-size: 0.8em; color: #555;">
-                Generated: PT: 12:33 AM | CT: 02:33 AM | ET: 03:33 AM
+                Generated: PT: 12:46 AM | CT: 02:46 AM | ET: 03:46 AM
             </p>
             <p style="margin-top: 15px; font-size: 0.75em; color: #888; border-top: 1px solid #ddd; padding-top: 10px;">
                 To unsubscribe, reply to this email with "UNSUBSCRIBE" in the subject line.<br>

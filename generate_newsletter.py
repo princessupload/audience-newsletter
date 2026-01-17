@@ -454,7 +454,8 @@ def generate_newsletter_html(draws_by_lottery, jackpots):
             body {{ padding: 10px; }}
             .container {{ padding: 0 5px; }}
             .header {{ padding: 20px 15px; border-radius: 20px; }}
-            h1 {{ font-size: 1.8em; letter-spacing: 1px; }}
+            h1 {{ font-size: 1.6em; letter-spacing: 1px; white-space: nowrap; }}
+            .heart-icon {{ width: 20px; height: 20px; }}
             .subtitle {{ font-size: 1em; }}
             .times-bar {{ font-size: 0.8em; padding: 10px 15px; }}
             .section {{ padding: 15px; border-radius: 20px; margin-bottom: 15px; }}
@@ -469,14 +470,21 @@ def generate_newsletter_html(draws_by_lottery, jackpots):
             .pool-num {{ padding: 3px 8px; font-size: 0.8em; }}
             .how-to-box {{ padding: 15px; }}
             .footer {{ padding: 20px 15px; }}
+            /* Mobile-friendly tables */
+            table {{ font-size: 0.8em !important; }}
+            table th, table td {{ padding: 6px 4px !important; }}
+            .backtest-table {{ display: block; overflow-x: auto; -webkit-overflow-scrolling: touch; }}
         }}
         
         @media (max-width: 480px) {{
-            h1 {{ font-size: 1.5em; }}
+            h1 {{ font-size: 1.3em; letter-spacing: 0; }}
+            .heart-icon {{ width: 16px; height: 16px; margin: 0 4px; }}
             .ball {{ width: 34px; height: 34px; font-size: 13px; }}
             .jackpot-amount {{ font-size: 1.2em; }}
             .lottery-name {{ font-size: 1.1em; }}
             .section-title {{ font-size: 1.2em; }}
+            table {{ font-size: 0.75em !important; }}
+            table th, table td {{ padding: 4px 2px !important; }}
         }}
         
         .lottery-card {{
@@ -874,8 +882,9 @@ def generate_newsletter_html(draws_by_lottery, jackpots):
             
             <!-- KEY FINDING: HOLD BEATS NEXT PLAY -->
             <div style="background: linear-gradient(135deg, #fff3e0 0%, #ffe0b2 100%); border: 3px solid #ff9800; border-radius: 15px; padding: 20px; margin-bottom: 20px;">
-                <h3 style="color: #e65100; text-align: center; margin-bottom: 15px;">🏆 KEY FINDING: HOLD Tickets Are BETTER Than NEXT PLAY</h3>
-                <table style="width: 100%; border-collapse: collapse; font-size: 0.95em;">
+                <h3 style="color: #e65100; text-align: center; margin-bottom: 15px;">🏆 HOLD Tickets Beat NEXT PLAY</h3>
+                <div class="backtest-table" style="overflow-x: auto;">
+                <table style="width: 100%; border-collapse: collapse; font-size: 0.95em; min-width: 320px;">
                     <tr style="background: rgba(255,255,255,0.7);">
                         <th style="padding: 8px; text-align: left;">Lottery</th>
                         <th style="padding: 8px; text-align: center;">HOLD</th>
@@ -887,6 +896,7 @@ def generate_newsletter_html(draws_by_lottery, jackpots):
                     <tr><td style="padding: 6px;">🔴 Powerball</td><td style="text-align: center; font-weight: bold; color: #2e7d32;">2.46×</td><td style="text-align: center;">2.06×</td><td style="text-align: center;">✅ HOLD</td></tr>
                     <tr style="background: rgba(255,255,255,0.5);"><td style="padding: 6px;">💰 Mega Millions</td><td style="text-align: center; font-weight: bold; color: #2e7d32;">~2.5×</td><td style="text-align: center;">~1.6×</td><td style="text-align: center;">✅ HOLD</td></tr>
                 </table>
+                </div>
                 <p style="margin-top: 12px; text-align: center; color: #e65100; font-weight: bold;">📌 Pick ONE ticket per lottery and STICK WITH IT forever!</p>
             </div>
             
@@ -918,8 +928,9 @@ def generate_newsletter_html(draws_by_lottery, jackpots):
             
             <!-- VERIFIED IMPROVEMENT TABLE - HONEST NUMBERS FROM BACKTESTING -->
             <div style="background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%); border: 3px solid #4caf50; border-radius: 15px; padding: 20px; margin-bottom: 20px;">
-                <h3 style="color: #2e7d32; font-family: 'Playfair Display', serif; margin-bottom: 15px; text-align: center;">📈 Walk-Forward Backtested Results (Honest Numbers)</h3>
-                <table style="width: 100%; border-collapse: collapse; font-size: 0.95em;">
+                <h3 style="color: #2e7d32; font-family: 'Playfair Display', serif; margin-bottom: 15px; text-align: center;">📈 Walk-Forward Backtested Results</h3>
+                <div class="backtest-table" style="overflow-x: auto;">
+                <table style="width: 100%; border-collapse: collapse; font-size: 0.95em; min-width: 400px;">
                     <tr style="background: rgba(255,255,255,0.7);">
                         <th style="padding: 10px; text-align: left; border-bottom: 2px solid #4caf50;">Lottery</th>
                         <th style="padding: 10px; text-align: center; border-bottom: 2px solid #4caf50;">Pool Hit Rate</th>
@@ -951,6 +962,7 @@ def generate_newsletter_html(draws_by_lottery, jackpots):
                         <td style="padding: 10px; text-align: center;">Position Frequency</td>
                     </tr>
                 </table>
+                </div>
                 <p style="margin-top: 12px; text-align: center; color: #1b5e20; font-size: 0.85em;">*Tested on held-out data: Train on 80% older draws, test on 20% newer draws</p>
             </div>
             

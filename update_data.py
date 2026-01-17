@@ -131,6 +131,29 @@ def fetch_l4l_lotto_net():
 # ============================================================
 # POWERBALL - Dual Source Fetching
 # ============================================================
+def fetch_pb_ny_api():
+    """Source 1: NY Open Data API (most reliable)."""
+    try:
+        html = fetch_url("https://data.ny.gov/api/views/d6yy-54nr/rows.csv?accessType=DOWNLOAD")
+        if not html:
+            return None
+        
+        lines = html.strip().split('\n')
+        if len(lines) < 2:
+            return None
+        
+        latest = lines[-1].split(',')
+        date_str = datetime.strptime(latest[0].strip('"'), "%m/%d/%Y").strftime("%Y-%m-%d")
+        main_str = latest[1].strip('"').split()
+        
+        main = sorted([int(n) for n in main_str])
+        bonus = int(latest[2].strip('"'))
+        
+        return {'date': date_str, 'main': main, 'bonus': bonus}
+    except Exception as e:
+        print(f"  ⚠️ PB NY API error: {e}")
+        return None
+
 def fetch_pb_ct_rss():
     """Source 1: CT Lottery RSS feed."""
     try:
@@ -522,7 +545,7 @@ def main():
     
     # Update each lottery with dual-source fetching
     update_lottery('l4l', [fetch_l4l_ct_rss, fetch_l4l_lotto_net])
-    update_lottery('pb', [fetch_pb_ct_rss, fetch_pb_iowa])
+    update_lottery('pb', [fetch_pb_ny_api, fetch_pb_ct_rss, fetch_pb_iowa])
     update_lottery('mm', [fetch_mm_ny_api, fetch_mm_iowa])
     update_lottery('la', [fetch_la_oklahoma, fetch_la_iowa, fetch_la_lottoamerica, fetch_la_lotto_net])
     
