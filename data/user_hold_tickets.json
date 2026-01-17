@@ -1,0 +1,60 @@
+{
+  "created": "2026-01-15",
+  "description": "User's personal HOLD FOREVER tickets",
+  "tickets": {
+    "pb": {
+      "main": [
+        4,
+        21,
+        35,
+        61,
+        69
+      ],
+      "bonus": 21,
+      "name": "Powerball"
+    },
+    "la": {
+      "main": [
+        2,
+        15,
+        21,
+        33,
+        52
+      ],
+      "bonus": 4,
+      "name": "Lotto America"
+    },
+    "l4l": {
+      "main": [
+        5,
+        12,
+        30,
+        39,
+        40
+      ],
+      "bonus": 2,
+      "name": "Lucky for Life"
+    },
+    "mm": {
+      "main": [
+        18,
+        21,
+        27,
+        42,
+        68
+      ],
+      "bonus": 24,
+      "name": "Mega Millions"
+    }
+  },
+  "wins": {
+    "5_of_5": [],
+    "jackpot": []
+  },
+  "check_history": [
+    {
+      "date": "2026-01-15T23:03:13.312523",
+      "any_wins": false
+    }
+  ]
+}

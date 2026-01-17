@@ -1,0 +1,35 @@
+name: Daily Newsletter Update
+
+on:
+  schedule:
+    # Run at 7 AM and 11 PM Central Time (UTC-6)
+    - cron: '0 13 * * *'  # 7 AM CT
+    - cron: '0 5 * * *'   # 11 PM CT
+  workflow_dispatch:  # Allow manual trigger
+
+jobs:
+  update-and-generate:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      
+      - name: Update lottery data
+        run: python update_data.py
+      
+      - name: Generate newsletter
+        run: python generate_newsletter.py
+      
+      - name: Commit and push changes
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add -A
+          git diff --staged --quiet || git commit -m "Auto-update: $(date +'%Y-%m-%d %H:%M') CT"
+          git push

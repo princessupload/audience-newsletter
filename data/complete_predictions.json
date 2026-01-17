@@ -1,0 +1,158 @@
+{
+  "l4l": {
+    "name": "Lucky for Life",
+    "last_draw": {
+      "date": "2026-01-14",
+      "numbers": [
+        14,
+        17,
+        21,
+        30,
+        36
+      ],
+      "bonus": 3
+    },
+    "next_draw": {
+      "ticket": [
+        3,
+        9,
+        30,
+        40,
+        46
+      ],
+      "bonus": 15,
+      "score": 3613,
+      "reasoning": "Based on 400-draw window + 3-combo boost + repeat candidates"
+    },
+    "hold": {
+      "ticket": [
+        3,
+        12,
+        30,
+        39,
+        46
+      ],
+      "bonus": 11,
+      "score": 5815,
+      "reasoning": "Based on ALL 1051 draws - position frequency + 3-combos"
+    },
+    "generated": "2026-01-15T18:46:49.838590"
+  },
+  "la": {
+    "name": "Lotto America",
+    "last_draw": {
+      "date": "2026-01-14",
+      "numbers": [
+        1,
+        10,
+        23,
+        33,
+        35
+      ],
+      "bonus": 6
+    },
+    "next_draw": {
+      "ticket": [
+        1,
+        10,
+        23,
+        35,
+        51
+      ],
+      "bonus": 3,
+      "score": 993,
+      "reasoning": "Based on 150-draw window + 3-combo boost + repeat candidates"
+    },
+    "hold": {
+      "ticket": [
+        1,
+        15,
+        23,
+        42,
+        51
+      ],
+      "bonus": 4,
+      "score": 2013,
+      "reasoning": "Based on ALL 431 draws - position frequency + 3-combos"
+    },
+    "generated": "2026-01-15T18:46:50.135264"
+  },
+  "pb": {
+    "name": "Powerball",
+    "last_draw": {
+      "date": "2026-01-14",
+      "numbers": [
+        6,
+        24,
+        39,
+        43,
+        51
+      ],
+      "bonus": 2
+    },
+    "next_draw": {
+      "ticket": [
+        4,
+        16,
+        43,
+        51,
+        62
+      ],
+      "bonus": 23,
+      "score": 500,
+      "reasoning": "Based on 100-draw window + 3-combo boost + repeat candidates"
+    },
+    "hold": {
+      "ticket": [
+        1,
+        11,
+        33,
+        52,
+        69
+      ],
+      "bonus": 20,
+      "score": 1396,
+      "reasoning": "Based on ALL 431 draws - position frequency + 3-combos"
+    },
+    "generated": "2026-01-15T18:46:50.410388"
+  },
+  "mm": {
+    "name": "Mega Millions",
+    "last_draw": {
+      "date": "2026-01-13",
+      "numbers": [
+        16,
+        40,
+        56,
+        64,
+        66
+      ],
+      "bonus": 4
+    },
+    "next_draw": {
+      "ticket": [
+        2,
+        19,
+        31,
+        42,
+        56
+      ],
+      "bonus": 4,
+      "score": 169,
+      "reasoning": "Based on 30-draw window + 3-combo boost + repeat candidates"
+    },
+    "hold": {
+      "ticket": [
+        6,
+        10,
+        27,
+        42,
+        68
+      ],
+      "bonus": 24,
+      "score": 332,
+      "reasoning": "Based on ALL 81 draws - position frequency + 3-combos"
+    },
+    "generated": "2026-01-15T18:46:50.578316"
+  }
+}

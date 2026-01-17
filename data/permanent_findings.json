@@ -1,0 +1,83 @@
+{
+  "patterns": {
+    "repeat_analysis": {
+      "l4l_repeat_rate": 45.1,
+      "la_repeat_rate": 42.3,
+      "common_repeaters": [
+        8,
+        9
+      ],
+      "l4l_top_repeaters": [
+        8,
+        9,
+        17,
+        7,
+        30,
+        46,
+        20,
+        12
+      ],
+      "la_top_repeaters": [
+        8,
+        51,
+        9,
+        35,
+        42,
+        1,
+        5,
+        47
+      ],
+      "insight": "Nearly half of draws contain at least 1 number from previous draw"
+    }
+  },
+  "insights": [],
+  "daily_logs": [
+    {
+      "date": "2026-01-12T19:51:45.710907",
+      "predictions_checked": 0,
+      "results": [],
+      "repeat_analysis": {
+        "l4l": {
+          "likely_to_repeat": [
+            12,
+            6
+          ]
+        },
+        "la": {
+          "likely_to_repeat": [
+            25,
+            15
+          ]
+        },
+        "pb": {
+          "likely_to_repeat": [
+            64,
+            21
+          ]
+        },
+        "mm": {
+          "likely_to_repeat": []
+        }
+      },
+      "performance": {
+        "l4l": {
+          "total": 0,
+          "avg_matches": 0
+        },
+        "la": {
+          "total": 0,
+          "avg_matches": 0
+        },
+        "pb": {
+          "total": 0,
+          "avg_matches": 0
+        },
+        "mm": {
+          "total": 0,
+          "avg_matches": 0
+        }
+      }
+    }
+  ],
+  "last_evaluation": "2026-01-12T19:51:45.710907"
+}

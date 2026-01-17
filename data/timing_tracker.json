@@ -1,0 +1,1476 @@
+{
+  "l4l": {
+    "lottery": "l4l",
+    "name": "Lucky for Life",
+    "updated": "2026-01-16T17:39:22.148267",
+    "total_draws": 1052,
+    "last_draw": {
+      "main": [
+        3,
+        24,
+        32,
+        39,
+        41
+      ],
+      "bonus": 18,
+      "date": "2026-01-15"
+    },
+    "overdue_numbers": [
+      {
+        "number": 22,
+        "current_gap": 42,
+        "avg_gap": 9.6,
+        "ratio": 4.36,
+        "status": "VERY_OVERDUE"
+      },
+      {
+        "number": 18,
+        "current_gap": 32,
+        "avg_gap": 9.3,
+        "ratio": 3.44,
+        "status": "VERY_OVERDUE"
+      },
+      {
+        "number": 33,
+        "current_gap": 31,
+        "avg_gap": 9.4,
+        "ratio": 3.29,
+        "status": "VERY_OVERDUE"
+      },
+      {
+        "number": 35,
+        "current_gap": 32,
+        "avg_gap": 10.3,
+        "ratio": 3.12,
+        "status": "VERY_OVERDUE"
+      },
+      {
+        "number": 46,
+        "current_gap": 23,
+        "avg_gap": 8.3,
+        "ratio": 2.76,
+        "status": "VERY_OVERDUE"
+      },
+      {
+        "number": 11,
+        "current_gap": 24,
+        "avg_gap": 10.1,
+        "ratio": 2.36,
+        "status": "VERY_OVERDUE"
+      },
+      {
+        "number": 4,
+        "current_gap": 22,
+        "avg_gap": 9.5,
+        "ratio": 2.32,
+        "status": "VERY_OVERDUE"
+      },
+      {
+        "number": 37,
+        "current_gap": 20,
+        "avg_gap": 9.6,
+        "ratio": 2.08,
+        "status": "VERY_OVERDUE"
+      },
+      {
+        "number": 29,
+        "current_gap": 20,
+        "avg_gap": 9.9,
+        "ratio": 2.02,
+        "status": "VERY_OVERDUE"
+      },
+      {
+        "number": 34,
+        "current_gap": 17,
+        "avg_gap": 8.4,
+        "ratio": 2.02,
+        "status": "VERY_OVERDUE"
+      },
+      {
+        "number": 16,
+        "current_gap": 16,
+        "avg_gap": 9.9,
+        "ratio": 1.62,
+        "status": "OVERDUE"
+      },
+      {
+        "number": 9,
+        "current_gap": 12,
+        "avg_gap": 8.0,
+        "ratio": 1.51,
+        "status": "OVERDUE"
+      },
+      {
+        "number": 26,
+        "current_gap": 14,
+        "avg_gap": 10.0,
+        "ratio": 1.4,
+        "status": "DUE"
+      },
+      {
+        "number": 25,
+        "current_gap": 12,
+        "avg_gap": 9.4,
+        "ratio": 1.28,
+        "status": "DUE"
+      }
+    ],
+    "repeat_candidates": [
+      {
+        "number": 3,
+        "repeat_count": 15,
+        "total_appearances": 131,
+        "repeat_rate": 11.5
+      },
+      {
+        "number": 39,
+        "repeat_count": 11,
+        "total_appearances": 115,
+        "repeat_rate": 9.6
+      },
+      {
+        "number": 24,
+        "repeat_count": 10,
+        "total_appearances": 109,
+        "repeat_rate": 9.2
+      },
+      {
+        "number": 41,
+        "repeat_count": 9,
+        "total_appearances": 98,
+        "repeat_rate": 9.2
+      },
+      {
+        "number": 32,
+        "repeat_count": 7,
+        "total_appearances": 98,
+        "repeat_rate": 7.1
+      }
+    ],
+    "repeat_status": {
+      "draws_since_last_repeat": 1,
+      "avg_gap_between_repeats": 2.2,
+      "repeat_rate": 45.2,
+      "expect_repeat_soon": false
+    },
+    "due_combos": [
+      {
+        "combo": [
+          9,
+          15,
+          20
+        ],
+        "times_appeared": 2,
+        "last_seen": 12,
+        "avg_gap": 7.0,
+        "expected_in": 0
+      },
+      {
+        "combo": [
+          2,
+          9,
+          24
+        ],
+        "times_appeared": 2,
+        "last_seen": 19,
+        "avg_gap": 8.0,
+        "expected_in": 0
+      },
+      {
+        "combo": [
+          19,
+          24,
+          39
+        ],
+        "times_appeared": 2,
+        "last_seen": 29,
+        "avg_gap": 7.0,
+        "expected_in": 0
+      },
+      {
+        "combo": [
+          8,
+          12,
+          16
+        ],
+        "times_appeared": 2,
+        "last_seen": 48,
+        "avg_gap": 10.0,
+        "expected_in": 0
+      },
+      {
+        "combo": [
+          12,
+          30,
+          40
+        ],
+        "times_appeared": 3,
+        "last_seen": 64,
+        "avg_gap": 42.0,
+        "expected_in": 0
+      },
+      {
+        "combo": [
+          9,
+          15,
+          32
+        ],
+        "times_appeared": 2,
+        "last_seen": 69,
+        "avg_gap": 16.0,
+        "expected_in": 0
+      },
+      {
+        "combo": [
+          19,
+          28,
+          46
+        ],
+        "times_appeared": 2,
+        "last_seen": 74,
+        "avg_gap": 19.0,
+        "expected_in": 0
+      },
+      {
+        "combo": [
+          37,
+          40,
+          42
+        ],
+        "times_appeared": 2,
+        "last_seen": 75,
+        "avg_gap": 20.0,
+        "expected_in": 0
+      },
+      {
+        "combo": [
+          14,
+          21,
+          24
+        ],
+        "times_appeared": 2,
+        "last_seen": 78,
+        "avg_gap": 43.0,
+        "expected_in": 0
+      },
+      {
+        "combo": [
+          8,
+          24,
+          30
+        ],
+        "times_appeared": 2,
+        "last_seen": 80,
+        "avg_gap": 58.0,
+        "expected_in": 0
+      }
+    ],
+    "position_analysis": [
+      {
+        "position": 1,
+        "last_number": 3,
+        "avg_return_gap": 9.8,
+        "top_numbers": [
+          3,
+          8,
+          1,
+          5,
+          9
+        ]
+      },
+      {
+        "position": 2,
+        "last_number": 24,
+        "avg_return_gap": 34.1,
+        "top_numbers": [
+          12,
+          8,
+          9,
+          4,
+          11
+        ]
+      },
+      {
+        "position": 3,
+        "last_number": 32,
+        "avg_return_gap": 23.3,
+        "top_numbers": [
+          32,
+          24,
+          23,
+          15,
+          30
+        ]
+      },
+      {
+        "position": 4,
+        "last_number": 39,
+        "avg_return_gap": 17.8,
+        "top_numbers": [
+          34,
+          24,
+          30,
+          25,
+          40
+        ]
+      },
+      {
+        "position": 5,
+        "last_number": 41,
+        "avg_return_gap": 21.5,
+        "top_numbers": [
+          45,
+          46,
+          43,
+          48,
+          47
+        ]
+      }
+    ],
+    "overdue_bonus": [
+      {
+        "bonus": 4,
+        "current_gap": 38,
+        "avg_gap": 17.3,
+        "ratio": 2.19
+      },
+      {
+        "bonus": 6,
+        "current_gap": 36,
+        "avg_gap": 16.5,
+        "ratio": 2.19
+      },
+      {
+        "bonus": 11,
+        "current_gap": 29,
+        "avg_gap": 13.4,
+        "ratio": 2.17
+      }
+    ],
+    "bonus_repeat_rate": 4.8,
+    "timing_prediction": {
+      "main": [
+        2,
+        3,
+        9,
+        15,
+        18
+      ],
+      "bonus": 4,
+      "reasoning": [
+        "Repeat candidates from last draw: [3, 39]",
+        "Overdue numbers: [22, 18, 33]",
+        "Due 3-combos: [[9, 15, 20], [2, 9, 24]]"
+      ]
+    }
+  },
+  "la": {
+    "lottery": "la",
+    "name": "Lotto America",
+    "updated": "2026-01-16T17:39:22.188462",
+    "total_draws": 431,
+    "last_draw": {
+      "main": [
+        1,
+        10,
+        23,
+        33,
+        35
+      ],
+      "bonus": 6,
+      "date": "2026-01-14"
+    },
+    "overdue_numbers": [
+      {
+        "number": 16,
+        "current_gap": 52,
+        "avg_gap": 9.1,
+        "ratio": 5.69,
+        "status": "VERY_OVERDUE"
+      },
+      {
+        "number": 52,
+        "current_gap": 28,
+        "avg_gap": 8.5,
+        "ratio": 3.28,
+        "status": "VERY_OVERDUE"
+      },
+      {
+        "number": 17,
+        "current_gap": 27,
+        "avg_gap": 10.2,
+        "ratio": 2.65,
+        "status": "VERY_OVERDUE"
+      },
+      {
+        "number": 39,
+        "current_gap": 26,
+        "avg_gap": 10.1,
+        "ratio": 2.58,
+        "status": "VERY_OVERDUE"
+      },
+      {
+        "number": 31,
+        "current_gap": 26,
+        "avg_gap": 10.3,
+        "ratio": 2.53,
+        "status": "VERY_OVERDUE"
+      },
+      {
+        "number": 2,
+        "current_gap": 24,
+        "avg_gap": 10.6,
+        "ratio": 2.27,
+        "status": "VERY_OVERDUE"
+      },
+      {
+        "number": 28,
+        "current_gap": 21,
+        "avg_gap": 10.1,
+        "ratio": 2.09,
+        "status": "VERY_OVERDUE"
+      },
+      {
+        "number": 48,
+        "current_gap": 25,
+        "avg_gap": 15.5,
+        "ratio": 1.61,
+        "status": "OVERDUE"
+      },
+      {
+        "number": 26,
+        "current_gap": 14,
+        "avg_gap": 10.1,
+        "ratio": 1.39,
+        "status": "DUE"
+      },
+      {
+        "number": 7,
+        "current_gap": 16,
+        "avg_gap": 11.6,
+        "ratio": 1.38,
+        "status": "DUE"
+      },
+      {
+        "number": 11,
+        "current_gap": 13,
+        "avg_gap": 9.6,
+        "ratio": 1.35,
+        "status": "DUE"
+      },
+      {
+        "number": 32,
+        "current_gap": 14,
+        "avg_gap": 11.2,
+        "ratio": 1.25,
+        "status": "DUE"
+      },
+      {
+        "number": 38,
+        "current_gap": 12,
+        "avg_gap": 9.9,
+        "ratio": 1.21,
+        "status": "DUE"
+      }
+    ],
+    "repeat_candidates": [
+      {
+        "number": 35,
+        "repeat_count": 8,
+        "total_appearances": 42,
+        "repeat_rate": 19.0
+      },
+      {
+        "number": 1,
+        "repeat_count": 7,
+        "total_appearances": 44,
+        "repeat_rate": 15.9
+      },
+      {
+        "number": 10,
+        "repeat_count": 5,
+        "total_appearances": 46,
+        "repeat_rate": 10.9
+      },
+      {
+        "number": 23,
+        "repeat_count": 5,
+        "total_appearances": 44,
+        "repeat_rate": 11.4
+      },
+      {
+        "number": 33,
+        "repeat_count": 5,
+        "total_appearances": 45,
+        "repeat_rate": 11.1
+      }
+    ],
+    "repeat_status": {
+      "draws_since_last_repeat": 1,
+      "avg_gap_between_repeats": 2.4,
+      "repeat_rate": 42.3,
+      "expect_repeat_soon": false
+    },
+    "due_combos": [
+      {
+        "combo": [
+          7,
+          19,
+          25
+        ],
+        "times_appeared": 2,
+        "last_seen": 21,
+        "avg_gap": 10.0,
+        "expected_in": 0
+      },
+      {
+        "combo": [
+          12,
+          27,
+          35
+        ],
+        "times_appeared": 3,
+        "last_seen": 34,
+        "avg_gap": 14.0,
+        "expected_in": 0
+      },
+      {
+        "combo": [
+          12,
+          27,
+          39
+        ],
+        "times_appeared": 2,
+        "last_seen": 34,
+        "avg_gap": 29.0,
+        "expected_in": 0
+      },
+      {
+        "combo": [
+          12,
+          35,
+          39
+        ],
+        "times_appeared": 2,
+        "last_seen": 34,
+        "avg_gap": 29.0,
+        "expected_in": 0
+      },
+      {
+        "combo": [
+          27,
+          35,
+          39
+        ],
+        "times_appeared": 2,
+        "last_seen": 34,
+        "avg_gap": 29.0,
+        "expected_in": 0
+      },
+      {
+        "combo": [
+          2,
+          13,
+          42
+        ],
+        "times_appeared": 2,
+        "last_seen": 50,
+        "avg_gap": 50.0,
+        "expected_in": 0
+      },
+      {
+        "combo": [
+          8,
+          36,
+          45
+        ],
+        "times_appeared": 2,
+        "last_seen": 51,
+        "avg_gap": 32.0,
+        "expected_in": 0
+      },
+      {
+        "combo": [
+          3,
+          35,
+          39
+        ],
+        "times_appeared": 2,
+        "last_seen": 56,
+        "avg_gap": 7.0,
+        "expected_in": 0
+      },
+      {
+        "combo": [
+          4,
+          11,
+          23
+        ],
+        "times_appeared": 2,
+        "last_seen": 58,
+        "avg_gap": 58.0,
+        "expected_in": 0
+      },
+      {
+        "combo": [
+          10,
+          21,
+          45
+        ],
+        "times_appeared": 2,
+        "last_seen": 59,
+        "avg_gap": 21.0,
+        "expected_in": 0
+      }
+    ],
+    "position_analysis": [
+      {
+        "position": 1,
+        "last_number": 1,
+        "avg_return_gap": 9.6,
+        "top_numbers": [
+          1,
+          4,
+          8,
+          2,
+          12
+        ]
+      },
+      {
+        "position": 2,
+        "last_number": 10,
+        "avg_return_gap": 17.3,
+        "top_numbers": [
+          10,
+          19,
+          24,
+          13,
+          12
+        ]
+      },
+      {
+        "position": 3,
+        "last_number": 23,
+        "avg_return_gap": 18.0,
+        "top_numbers": [
+          23,
+          27,
+          25,
+          20,
+          35
+        ]
+      },
+      {
+        "position": 4,
+        "last_number": 33,
+        "avg_return_gap": 21.7,
+        "top_numbers": [
+          35,
+          45,
+          40,
+          43,
+          33
+        ]
+      },
+      {
+        "position": 5,
+        "last_number": 35,
+        "avg_return_gap": 35.9,
+        "top_numbers": [
+          50,
+          51,
+          47,
+          52,
+          42
+        ]
+      }
+    ],
+    "overdue_bonus": [
+      {
+        "bonus": 1,
+        "current_gap": 11,
+        "avg_gap": 8.6,
+        "ratio": 1.28
+      },
+      {
+        "bonus": 7,
+        "current_gap": 13,
+        "avg_gap": 10.7,
+        "ratio": 1.21
+      }
+    ],
+    "bonus_repeat_rate": 8.8,
+    "timing_prediction": {
+      "main": [
+        1,
+        7,
+        12,
+        16,
+        17
+      ],
+      "bonus": 1,
+      "reasoning": [
+        "Repeat candidates from last draw: [35, 1]",
+        "Overdue numbers: [16, 52, 17]",
+        "Due 3-combos: [[7, 19, 25], [12, 27, 35]]"
+      ]
+    }
+  },
+  "pb": {
+    "lottery": "pb",
+    "name": "Powerball",
+    "updated": "2026-01-16T17:39:22.203640",
+    "total_draws": 431,
+    "last_draw": {
+      "main": [
+        6,
+        24,
+        39,
+        43,
+        51
+      ],
+      "bonus": 2,
+      "date": "2026-01-14"
+    },
+    "overdue_numbers": [
+      {
+        "number": 42,
+        "current_gap": 49,
+        "avg_gap": 13.8,
+        "ratio": 3.56,
+        "status": "VERY_OVERDUE"
+      },
+      {
+        "number": 67,
+        "current_gap": 35,
+        "avg_gap": 11.7,
+        "ratio": 2.99,
+        "status": "VERY_OVERDUE"
+      },
+      {
+        "number": 37,
+        "current_gap": 36,
+        "avg_gap": 13.1,
+        "ratio": 2.74,
+        "status": "VERY_OVERDUE"
+      },
+      {
+        "number": 55,
+        "current_gap": 45,
+        "avg_gap": 16.6,
+        "ratio": 2.71,
+        "status": "VERY_OVERDUE"
+      },
+      {
+        "number": 2,
+        "current_gap": 32,
+        "avg_gap": 12.7,
+        "ratio": 2.52,
+        "status": "VERY_OVERDUE"
+      },
+      {
+        "number": 61,
+        "current_gap": 30,
+        "avg_gap": 11.9,
+        "ratio": 2.51,
+        "status": "VERY_OVERDUE"
+      },
+      {
+        "number": 12,
+        "current_gap": 26,
+        "avg_gap": 10.5,
+        "ratio": 2.48,
+        "status": "VERY_OVERDUE"
+      },
+      {
+        "number": 9,
+        "current_gap": 30,
+        "avg_gap": 12.8,
+        "ratio": 2.34,
+        "status": "VERY_OVERDUE"
+      },
+      {
+        "number": 50,
+        "current_gap": 25,
+        "avg_gap": 13.0,
+        "ratio": 1.93,
+        "status": "OVERDUE"
+      },
+      {
+        "number": 17,
+        "current_gap": 30,
+        "avg_gap": 16.6,
+        "ratio": 1.81,
+        "status": "OVERDUE"
+      },
+      {
+        "number": 7,
+        "current_gap": 21,
+        "avg_gap": 12.5,
+        "ratio": 1.68,
+        "status": "OVERDUE"
+      },
+      {
+        "number": 44,
+        "current_gap": 17,
+        "avg_gap": 10.7,
+        "ratio": 1.58,
+        "status": "OVERDUE"
+      },
+      {
+        "number": 47,
+        "current_gap": 19,
+        "avg_gap": 12.8,
+        "ratio": 1.49,
+        "status": "DUE"
+      },
+      {
+        "number": 65,
+        "current_gap": 27,
+        "avg_gap": 18.1,
+        "ratio": 1.49,
+        "status": "DUE"
+      },
+      {
+        "number": 30,
+        "current_gap": 20,
+        "avg_gap": 14.0,
+        "ratio": 1.43,
+        "status": "DUE"
+      }
+    ],
+    "repeat_candidates": [
+      {
+        "number": 24,
+        "repeat_count": 4,
+        "total_appearances": 39,
+        "repeat_rate": 10.3
+      },
+      {
+        "number": 43,
+        "repeat_count": 4,
+        "total_appearances": 38,
+        "repeat_rate": 10.5
+      },
+      {
+        "number": 6,
+        "repeat_count": 3,
+        "total_appearances": 31,
+        "repeat_rate": 9.7
+      },
+      {
+        "number": 39,
+        "repeat_count": 2,
+        "total_appearances": 33,
+        "repeat_rate": 6.1
+      },
+      {
+        "number": 51,
+        "repeat_count": 2,
+        "total_appearances": 30,
+        "repeat_rate": 6.7
+      }
+    ],
+    "repeat_status": {
+      "draws_since_last_repeat": 1,
+      "avg_gap_between_repeats": 3.1,
+      "repeat_rate": 31.9,
+      "expect_repeat_soon": false
+    },
+    "due_combos": [
+      {
+        "combo": [
+          32,
+          66,
+          67
+        ],
+        "times_appeared": 2,
+        "last_seen": 37,
+        "avg_gap": 6.0,
+        "expected_in": 0
+      },
+      {
+        "combo": [
+          29,
+          66,
+          67
+        ],
+        "times_appeared": 2,
+        "last_seen": 43,
+        "avg_gap": 7.0,
+        "expected_in": 0
+      },
+      {
+        "combo": [
+          15,
+          45,
+          53
+        ],
+        "times_appeared": 2,
+        "last_seen": 48,
+        "avg_gap": 21.0,
+        "expected_in": 0
+      },
+      {
+        "combo": [
+          29,
+          64,
+          67
+        ],
+        "times_appeared": 2,
+        "last_seen": 50,
+        "avg_gap": 40.0,
+        "expected_in": 0
+      },
+      {
+        "combo": [
+          35,
+          43,
+          62
+        ],
+        "times_appeared": 2,
+        "last_seen": 73,
+        "avg_gap": 13.0,
+        "expected_in": 0
+      },
+      {
+        "combo": [
+          36,
+          43,
+          62
+        ],
+        "times_appeared": 2,
+        "last_seen": 73,
+        "avg_gap": 22.0,
+        "expected_in": 0
+      },
+      {
+        "combo": [
+          3,
+          52,
+          62
+        ],
+        "times_appeared": 2,
+        "last_seen": 89,
+        "avg_gap": 29.0,
+        "expected_in": 0
+      },
+      {
+        "combo": [
+          17,
+          23,
+          52
+        ],
+        "times_appeared": 2,
+        "last_seen": 91,
+        "avg_gap": 79.0,
+        "expected_in": 0
+      },
+      {
+        "combo": [
+          5,
+          35,
+          45
+        ],
+        "times_appeared": 2,
+        "last_seen": 96,
+        "avg_gap": 82.0,
+        "expected_in": 0
+      },
+      {
+        "combo": [
+          4,
+          24,
+          29
+        ],
+        "times_appeared": 2,
+        "last_seen": 105,
+        "avg_gap": 71.0,
+        "expected_in": 0
+      }
+    ],
+    "position_analysis": [
+      {
+        "position": 1,
+        "last_number": 6,
+        "avg_return_gap": 18.2,
+        "top_numbers": [
+          4,
+          3,
+          8,
+          5,
+          7
+        ]
+      },
+      {
+        "position": 2,
+        "last_number": 24,
+        "avg_return_gap": 28.0,
+        "top_numbers": [
+          18,
+          16,
+          28,
+          29,
+          14
+        ]
+      },
+      {
+        "position": 3,
+        "last_number": 39,
+        "avg_return_gap": 59.0,
+        "top_numbers": [
+          40,
+          34,
+          28,
+          43,
+          44
+        ]
+      },
+      {
+        "position": 4,
+        "last_number": 43,
+        "avg_return_gap": 40.0,
+        "top_numbers": [
+          52,
+          51,
+          48,
+          50,
+          46
+        ]
+      },
+      {
+        "position": 5,
+        "last_number": 51,
+        "avg_return_gap": 46.3,
+        "top_numbers": [
+          62,
+          69,
+          59,
+          53,
+          64
+        ]
+      }
+    ],
+    "overdue_bonus": [
+      {
+        "bonus": 13,
+        "current_gap": 98,
+        "avg_gap": 24.7,
+        "ratio": 3.97
+      },
+      {
+        "bonus": 25,
+        "current_gap": 60,
+        "avg_gap": 16.8,
+        "ratio": 3.57
+      },
+      {
+        "bonus": 9,
+        "current_gap": 55,
+        "avg_gap": 15.4,
+        "ratio": 3.56
+      },
+      {
+        "bonus": 5,
+        "current_gap": 54,
+        "avg_gap": 17.4,
+        "ratio": 3.11
+      },
+      {
+        "bonus": 6,
+        "current_gap": 85,
+        "avg_gap": 31.0,
+        "ratio": 2.74
+      }
+    ],
+    "bonus_repeat_rate": 2.6,
+    "timing_prediction": {
+      "main": [
+        24,
+        29,
+        32,
+        37,
+        42
+      ],
+      "bonus": 13,
+      "reasoning": [
+        "Repeat candidates from last draw: [24, 43]",
+        "Overdue numbers: [42, 67, 37]",
+        "Due 3-combos: [[32, 66, 67], [29, 66, 67]]"
+      ]
+    }
+  },
+  "mm": {
+    "lottery": "mm",
+    "name": "Mega Millions",
+    "updated": "2026-01-16T17:39:22.219911",
+    "total_draws": 81,
+    "last_draw": {
+      "main": [
+        16,
+        40,
+        56,
+        64,
+        66
+      ],
+      "bonus": 4,
+      "date": "2026-01-13"
+    },
+    "overdue_numbers": [
+      {
+        "number": 67,
+        "current_gap": 44,
+        "avg_gap": 4.0,
+        "ratio": 11.0,
+        "status": "VERY_OVERDUE"
+      },
+      {
+        "number": 28,
+        "current_gap": 56,
+        "avg_gap": 7.0,
+        "ratio": 8.0,
+        "status": "VERY_OVERDUE"
+      },
+      {
+        "number": 29,
+        "current_gap": 47,
+        "avg_gap": 7.7,
+        "ratio": 6.13,
+        "status": "VERY_OVERDUE"
+      },
+      {
+        "number": 62,
+        "current_gap": 37,
+        "avg_gap": 9.5,
+        "ratio": 3.89,
+        "status": "VERY_OVERDUE"
+      },
+      {
+        "number": 35,
+        "current_gap": 38,
+        "avg_gap": 14.0,
+        "ratio": 2.71,
+        "status": "VERY_OVERDUE"
+      },
+      {
+        "number": 2,
+        "current_gap": 21,
+        "avg_gap": 8.0,
+        "ratio": 2.62,
+        "status": "VERY_OVERDUE"
+      },
+      {
+        "number": 54,
+        "current_gap": 29,
+        "avg_gap": 11.3,
+        "ratio": 2.56,
+        "status": "VERY_OVERDUE"
+      },
+      {
+        "number": 33,
+        "current_gap": 22,
+        "avg_gap": 8.7,
+        "ratio": 2.54,
+        "status": "VERY_OVERDUE"
+      },
+      {
+        "number": 21,
+        "current_gap": 19,
+        "avg_gap": 7.6,
+        "ratio": 2.5,
+        "status": "VERY_OVERDUE"
+      },
+      {
+        "number": 22,
+        "current_gap": 26,
+        "avg_gap": 10.8,
+        "ratio": 2.42,
+        "status": "VERY_OVERDUE"
+      },
+      {
+        "number": 45,
+        "current_gap": 28,
+        "avg_gap": 12.0,
+        "ratio": 2.33,
+        "status": "VERY_OVERDUE"
+      },
+      {
+        "number": 14,
+        "current_gap": 20,
+        "avg_gap": 8.8,
+        "ratio": 2.26,
+        "status": "VERY_OVERDUE"
+      },
+      {
+        "number": 17,
+        "current_gap": 12,
+        "avg_gap": 7.2,
+        "ratio": 1.66,
+        "status": "OVERDUE"
+      },
+      {
+        "number": 27,
+        "current_gap": 7,
+        "avg_gap": 4.4,
+        "ratio": 1.57,
+        "status": "OVERDUE"
+      },
+      {
+        "number": 8,
+        "current_gap": 17,
+        "avg_gap": 11.0,
+        "ratio": 1.55,
+        "status": "OVERDUE"
+      }
+    ],
+    "repeat_candidates": [
+      {
+        "number": 40,
+        "repeat_count": 2,
+        "total_appearances": 11,
+        "repeat_rate": 18.2
+      },
+      {
+        "number": 64,
+        "repeat_count": 2,
+        "total_appearances": 7,
+        "repeat_rate": 28.6
+      },
+      {
+        "number": 16,
+        "repeat_count": 1,
+        "total_appearances": 8,
+        "repeat_rate": 12.5
+      },
+      {
+        "number": 56,
+        "repeat_count": 1,
+        "total_appearances": 9,
+        "repeat_rate": 11.1
+      },
+      {
+        "number": 66,
+        "repeat_count": 0,
+        "total_appearances": 4,
+        "repeat_rate": 0.0
+      }
+    ],
+    "repeat_status": {
+      "draws_since_last_repeat": 1,
+      "avg_gap_between_repeats": 2.9,
+      "repeat_rate": 35.0,
+      "expect_repeat_soon": false
+    },
+    "due_combos": [
+      {
+        "combo": [
+          24,
+          41,
+          42
+        ],
+        "times_appeared": 2,
+        "last_seen": 32,
+        "avg_gap": 23.0,
+        "expected_in": 0
+      },
+      {
+        "combo": [
+          18,
+          21,
+          42
+        ],
+        "times_appeared": 2,
+        "last_seen": 35,
+        "avg_gap": 22.0,
+        "expected_in": 0
+      },
+      {
+        "combo": [
+          25,
+          49,
+          52
+        ],
+        "times_appeared": 2,
+        "last_seen": 49,
+        "avg_gap": 27.0,
+        "expected_in": 0
+      },
+      {
+        "combo": [
+          6,
+          10,
+          24
+        ],
+        "times_appeared": 2,
+        "last_seen": 52,
+        "avg_gap": 26.0,
+        "expected_in": 0
+      },
+      {
+        "combo": [
+          16,
+          40,
+          57
+        ],
+        "times_appeared": 2,
+        "last_seen": 63,
+        "avg_gap": 11.0,
+        "expected_in": 0
+      },
+      {
+        "combo": [
+          37,
+          38,
+          58
+        ],
+        "times_appeared": 2,
+        "last_seen": 65,
+        "avg_gap": 14.0,
+        "expected_in": 0
+      },
+      {
+        "combo": [
+          2,
+          22,
+          42
+        ],
+        "times_appeared": 2,
+        "last_seen": 33,
+        "avg_gap": 36.0,
+        "expected_in": 3.0
+      },
+      {
+        "combo": [
+          19,
+          31,
+          63
+        ],
+        "times_appeared": 2,
+        "last_seen": 5,
+        "avg_gap": 10.0,
+        "expected_in": 5.0
+      },
+      {
+        "combo": [
+          6,
+          43,
+          52
+        ],
+        "times_appeared": 2,
+        "last_seen": 3,
+        "avg_gap": 33.0,
+        "expected_in": 30.0
+      }
+    ],
+    "position_analysis": [
+      {
+        "position": 1,
+        "last_number": 16,
+        "avg_return_gap": 12.3,
+        "top_numbers": [
+          6,
+          16,
+          10,
+          2,
+          18
+        ]
+      },
+      {
+        "position": 2,
+        "last_number": 40,
+        "avg_return_gap": 37.5,
+        "top_numbers": [
+          10,
+          21,
+          18,
+          30,
+          19
+        ]
+      },
+      {
+        "position": 3,
+        "last_number": 56,
+        "avg_return_gap": 20,
+        "top_numbers": [
+          27,
+          31,
+          34,
+          38,
+          42
+        ]
+      },
+      {
+        "position": 4,
+        "last_number": 64,
+        "avg_return_gap": 36.0,
+        "top_numbers": [
+          42,
+          48,
+          40,
+          58,
+          63
+        ]
+      },
+      {
+        "position": 5,
+        "last_number": 66,
+        "avg_return_gap": 34.5,
+        "top_numbers": [
+          68,
+          69,
+          64,
+          63,
+          57
+        ]
+      }
+    ],
+    "overdue_bonus": [
+      {
+        "bonus": 13,
+        "current_gap": 64,
+        "avg_gap": 1.0,
+        "ratio": 64.0
+      },
+      {
+        "bonus": 23,
+        "current_gap": 38,
+        "avg_gap": 6.0,
+        "ratio": 6.33
+      },
+      {
+        "bonus": 20,
+        "current_gap": 58,
+        "avg_gap": 12.0,
+        "ratio": 4.83
+      },
+      {
+        "bonus": 12,
+        "current_gap": 41,
+        "avg_gap": 9.5,
+        "ratio": 4.32
+      },
+      {
+        "bonus": 2,
+        "current_gap": 46,
+        "avg_gap": 10.7,
+        "ratio": 4.31
+      }
+    ],
+    "bonus_repeat_rate": 6.2,
+    "timing_prediction": {
+      "main": [
+        18,
+        21,
+        24,
+        28,
+        29
+      ],
+      "bonus": 13,
+      "reasoning": [
+        "Repeat candidates from last draw: [40, 64]",
+        "Overdue numbers: [67, 28, 29]",
+        "Due 3-combos: [[24, 41, 42], [18, 21, 42]]"
+      ]
+    }
+  }
+}

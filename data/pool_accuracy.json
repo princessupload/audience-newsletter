@@ -1,0 +1,305 @@
+{
+  "tracking_started": "2026-01-13",
+  "lotteries": {
+    "l4l": {
+      "total_draws_tracked": 3,
+      "position_hits": [
+        1,
+        0,
+        2,
+        1,
+        0
+      ],
+      "position_attempts": [
+        3,
+        3,
+        3,
+        3,
+        3
+      ],
+      "bonus_hits": 0,
+      "bonus_attempts": 3,
+      "potential_jackpots": 0,
+      "partial_matches": {
+        "5": 0,
+        "4": 0,
+        "3": 1,
+        "2": 0,
+        "1": 1,
+        "0": 1
+      },
+      "history": [
+        {
+          "date": "2026-01-12",
+          "actual": [
+            21,
+            23,
+            24,
+            28,
+            39
+          ],
+          "bonus": 1,
+          "hits": 0,
+          "bonus_hit": false,
+          "position_hits": [
+            false,
+            false,
+            false,
+            false,
+            false
+          ]
+        },
+        {
+          "date": "2026-01-14",
+          "actual": [
+            14,
+            17,
+            21,
+            30,
+            36
+          ],
+          "bonus": 3,
+          "hits": 1,
+          "bonus_hit": false,
+          "position_hits": [
+            false,
+            false,
+            true,
+            false,
+            false
+          ]
+        },
+        {
+          "date": "2026-01-15",
+          "actual": [
+            3,
+            24,
+            32,
+            39,
+            41
+          ],
+          "bonus": 18,
+          "hits": 3,
+          "bonus_hit": false,
+          "position_hits": [
+            true,
+            false,
+            true,
+            true,
+            false
+          ]
+        }
+      ]
+    },
+    "la": {
+      "total_draws_tracked": 2,
+      "position_hits": [
+        2,
+        1,
+        2,
+        0,
+        1
+      ],
+      "position_attempts": [
+        2,
+        2,
+        2,
+        2,
+        2
+      ],
+      "bonus_hits": 2,
+      "bonus_attempts": 2,
+      "potential_jackpots": 0,
+      "partial_matches": {
+        "5": 0,
+        "4": 0,
+        "3": 2,
+        "2": 0,
+        "1": 0,
+        "0": 0
+      },
+      "history": [
+        {
+          "date": "2026-01-12",
+          "actual": [
+            9,
+            20,
+            25,
+            30,
+            51
+          ],
+          "bonus": 10,
+          "hits": 3,
+          "bonus_hit": true,
+          "position_hits": [
+            true,
+            false,
+            true,
+            false,
+            true
+          ]
+        },
+        {
+          "date": "2026-01-14",
+          "actual": [
+            1,
+            10,
+            23,
+            33,
+            35
+          ],
+          "bonus": 6,
+          "hits": 3,
+          "bonus_hit": true,
+          "position_hits": [
+            true,
+            true,
+            true,
+            false,
+            false
+          ]
+        }
+      ]
+    },
+    "pb": {
+      "total_draws_tracked": 2,
+      "position_hits": [
+        2,
+        1,
+        0,
+        0,
+        0
+      ],
+      "position_attempts": [
+        2,
+        2,
+        2,
+        2,
+        2
+      ],
+      "bonus_hits": 0,
+      "bonus_attempts": 2,
+      "potential_jackpots": 0,
+      "partial_matches": {
+        "5": 0,
+        "4": 0,
+        "3": 0,
+        "2": 1,
+        "1": 1,
+        "0": 0
+      },
+      "history": [
+        {
+          "date": "2026-01-12",
+          "actual": [
+            5,
+            27,
+            45,
+            56,
+            59
+          ],
+          "bonus": 4,
+          "hits": 1,
+          "bonus_hit": false,
+          "position_hits": [
+            true,
+            false,
+            false,
+            false,
+            false
+          ]
+        },
+        {
+          "date": "2026-01-14",
+          "actual": [
+            6,
+            24,
+            39,
+            43,
+            51
+          ],
+          "bonus": 2,
+          "hits": 2,
+          "bonus_hit": false,
+          "position_hits": [
+            true,
+            true,
+            false,
+            false,
+            false
+          ]
+        }
+      ]
+    },
+    "mm": {
+      "total_draws_tracked": 2,
+      "position_hits": [
+        1,
+        0,
+        0,
+        1,
+        0
+      ],
+      "position_attempts": [
+        2,
+        2,
+        2,
+        2,
+        2
+      ],
+      "bonus_hits": 0,
+      "bonus_attempts": 2,
+      "potential_jackpots": 0,
+      "partial_matches": {
+        "5": 0,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 2,
+        "0": 0
+      },
+      "history": [
+        {
+          "date": "2026-01-09",
+          "actual": [
+            12,
+            30,
+            36,
+            42,
+            47
+          ],
+          "bonus": 16,
+          "hits": 1,
+          "bonus_hit": false,
+          "position_hits": [
+            false,
+            false,
+            false,
+            true,
+            false
+          ]
+        },
+        {
+          "date": "2026-01-13",
+          "actual": [
+            16,
+            40,
+            56,
+            64,
+            66
+          ],
+          "bonus": 4,
+          "hits": 1,
+          "bonus_hit": false,
+          "position_hits": [
+            true,
+            false,
+            false,
+            false,
+            false
+          ]
+        }
+      ]
+    }
+  }
+}
