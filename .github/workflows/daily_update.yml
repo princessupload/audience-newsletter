@@ -1,14 +1,13 @@
-name: Daily Newsletter Update
+name: Auto Newsletter Update & Deploy
 
 on:
   schedule:
-    # Run at 7 AM and 11 PM Central Time (UTC-6)
-    - cron: '0 13 * * *'  # 7 AM CT
-    - cron: '0 5 * * *'   # 11 PM CT
+    # Run every 30 minutes (24/7 automatic updates)
+    - cron: '*/30 * * * *'
   workflow_dispatch:  # Allow manual trigger
 
 jobs:
-  update-and-generate:
+  update-generate-deploy:
     runs-on: ubuntu-latest
     
     steps:
@@ -21,18 +20,51 @@ jobs:
           python-version: '3.11'
       
       - name: Install dependencies
-        run: pip install pytz
+        run: pip install pytz paramiko
       
-      - name: Update lottery data
+      - name: Update lottery data from official sources
         run: python update_data.py
       
-      - name: Generate newsletter
+      - name: Generate newsletter HTML
         run: python generate_newsletter.py
       
-      - name: Commit and push changes
+      - name: Deploy to princessupload.net via SFTP
+        env:
+          SFTP_HOST: ${{ secrets.SFTP_HOST }}
+          SFTP_USER: ${{ secrets.SFTP_USER }}
+          SFTP_PASSWORD: ${{ secrets.SFTP_PASSWORD }}
+        run: |
+          python -c "
+          import paramiko
+          import os
+          
+          host = os.environ.get('SFTP_HOST', 'iad1-shared-b8-12.dreamhost.com')
+          user = os.environ.get('SFTP_USER', 'societyofsara')
+          password = os.environ.get('SFTP_PASSWORD', '')
+          
+          if not password:
+              print('⚠️ SFTP_PASSWORD not set - skipping deploy')
+              exit(0)
+          
+          print('🚀 Connecting to', host)
+          transport = paramiko.Transport((host, 22))
+          transport.connect(username=user, password=password)
+          sftp = paramiko.SFTPClient.from_transport(transport)
+          
+          local_file = 'output/latest.html'
+          remote_file = '/home/societyofsara/princessupload.net/lottery-newsletter.html'
+          
+          sftp.put(local_file, remote_file)
+          print('✅ Deployed to https://www.princessupload.net/lottery-newsletter.html')
+          
+          sftp.close()
+          transport.close()
+          "
+      
+      - name: Commit and push data changes
         run: |
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
           git add -A
-          git diff --staged --quiet || git commit -m "Auto-update: $(date +'%Y-%m-%d %H:%M') CT"
+          git diff --staged --quiet || git commit -m "Auto-update: $(date +'%Y-%m-%d %H:%M') UTC"
           git push
