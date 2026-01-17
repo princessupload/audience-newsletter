@@ -260,6 +260,45 @@ def fetch_mm_iowa():
 # ============================================================
 # LOTTO AMERICA - Dual Source Fetching
 # ============================================================
+def fetch_la_oklahoma():
+    """Source 1: Oklahoma Lottery - most reliable for LA."""
+    try:
+        html = fetch_url("https://www.lottery.ok.gov/draw-games/lotto-america")
+        if not html:
+            return None
+        
+        # Look for winning numbers - Oklahoma shows them in spans
+        numbers = re.findall(r'class="[^"]*ball[^"]*"[^>]*>(\d{1,2})<', html)
+        if not numbers:
+            numbers = re.findall(r'<span[^>]*>(\d{1,2})</span>', html)
+        
+        # Filter to valid LA numbers
+        valid = []
+        for n in numbers:
+            num = int(n)
+            if 1 <= num <= 52 and len(valid) < 5:
+                valid.append(num)
+            elif 1 <= num <= 10 and len(valid) == 5:
+                valid.append(num)
+                break
+        
+        if len(valid) >= 6:
+            main = sorted(valid[:5])
+            bonus = valid[5]
+            
+            now = datetime.now()
+            for offset in range(7):
+                check = now - timedelta(days=offset)
+                if check.weekday() in [0, 2, 5]:  # Mon, Wed, Sat
+                    date_str = check.strftime("%Y-%m-%d")
+                    break
+            
+            return {'date': date_str, 'main': main, 'bonus': bonus}
+        return None
+    except Exception as e:
+        print(f"  ⚠️ LA Oklahoma error: {e}")
+        return None
+
 def fetch_la_iowa():
     """Source 1: Iowa Lottery."""
     try:
@@ -485,7 +524,7 @@ def main():
     update_lottery('l4l', [fetch_l4l_ct_rss, fetch_l4l_lotto_net])
     update_lottery('pb', [fetch_pb_ct_rss, fetch_pb_iowa])
     update_lottery('mm', [fetch_mm_ny_api, fetch_mm_iowa])
-    update_lottery('la', [fetch_la_iowa, fetch_la_lottoamerica, fetch_la_lotto_net])
+    update_lottery('la', [fetch_la_oklahoma, fetch_la_iowa, fetch_la_lottoamerica, fetch_la_lotto_net])
     
     # Update jackpots
     update_jackpots()
