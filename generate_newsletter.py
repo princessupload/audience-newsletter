@@ -449,8 +449,34 @@ def generate_newsletter_html(draws_by_lottery, jackpots):
             gap: 20px;
         }}
         
+        /* Mobile Responsive Styles */
         @media (max-width: 768px) {{
-            .lottery-grid {{ grid-template-columns: 1fr; }}
+            body {{ padding: 10px; }}
+            .container {{ padding: 0 5px; }}
+            .header {{ padding: 20px 15px; border-radius: 20px; }}
+            h1 {{ font-size: 1.8em; letter-spacing: 1px; }}
+            .subtitle {{ font-size: 1em; }}
+            .times-bar {{ font-size: 0.8em; padding: 10px 15px; }}
+            .section {{ padding: 15px; border-radius: 20px; margin-bottom: 15px; }}
+            .section-title {{ font-size: 1.4em; }}
+            .lottery-grid {{ grid-template-columns: 1fr; gap: 15px; }}
+            .lottery-card {{ padding: 15px; border-radius: 15px; }}
+            .lottery-name {{ font-size: 1.2em; }}
+            .ball {{ width: 38px; height: 38px; font-size: 14px; }}
+            .jackpot-amount {{ font-size: 1.4em; }}
+            .jackpot-details {{ font-size: 0.8em; }}
+            .pool-label {{ min-width: 70px; font-size: 0.85em; }}
+            .pool-num {{ padding: 3px 8px; font-size: 0.8em; }}
+            .how-to-box {{ padding: 15px; }}
+            .footer {{ padding: 20px 15px; }}
+        }}
+        
+        @media (max-width: 480px) {{
+            h1 {{ font-size: 1.5em; }}
+            .ball {{ width: 34px; height: 34px; font-size: 13px; }}
+            .jackpot-amount {{ font-size: 1.2em; }}
+            .lottery-name {{ font-size: 1.1em; }}
+            .section-title {{ font-size: 1.2em; }}
         }}
         
         .lottery-card {{
