@@ -1,0 +1,98 @@
+{
+  "l4l_position": {
+    "train_size": 211,
+    "test_size": 841,
+    "hits": 1802,
+    "total": 4205,
+    "accuracy": 0.4285374554102259,
+    "accuracy_pct": "42.85%",
+    "improvement": "2.57x"
+  },
+  "l4l_hot": {
+    "test_size": 841,
+    "window": 20,
+    "pool_size": 10,
+    "hits": 932,
+    "total": 4205,
+    "accuracy": 0.221640903686088,
+    "accuracy_pct": "22.16%",
+    "improvement": "1.06x"
+  },
+  "l4l_repeat": {
+    "draws_checked": 1051,
+    "total_numbers": 5255,
+    "repeats": 588,
+    "repeat_rate": 0.11189343482397716,
+    "repeat_pct": "11.19%"
+  },
+  "l4l_constraints": {
+    "total": 1052,
+    "passed": 919,
+    "pass_rate": 0.873574144486692,
+    "pass_pct": "87.36%"
+  },
+  "la_position": {
+    "train_size": 87,
+    "test_size": 344,
+    "hits": 693,
+    "total": 1720,
+    "accuracy": 0.4029069767441861,
+    "accuracy_pct": "40.29%",
+    "improvement": "2.62x"
+  },
+  "la_hot": {
+    "test_size": 344,
+    "window": 20,
+    "pool_size": 10,
+    "hits": 347,
+    "total": 1720,
+    "accuracy": 0.20174418604651162,
+    "accuracy_pct": "20.17%",
+    "improvement": "1.05x"
+  },
+  "la_repeat": {
+    "draws_checked": 430,
+    "total_numbers": 2150,
+    "repeats": 213,
+    "repeat_rate": 0.09906976744186047,
+    "repeat_pct": "9.91%"
+  },
+  "la_constraints": {
+    "total": 431,
+    "passed": 370,
+    "pass_rate": 0.8584686774941995,
+    "pass_pct": "85.85%"
+  },
+  "pb_position": {
+    "train_size": 87,
+    "test_size": 344,
+    "hits": 490,
+    "total": 1720,
+    "accuracy": 0.28488372093023256,
+    "accuracy_pct": "28.49%",
+    "improvement": "2.46x"
+  },
+  "pb_hot": {
+    "test_size": 344,
+    "window": 20,
+    "pool_size": 10,
+    "hits": 249,
+    "total": 1720,
+    "accuracy": 0.1447674418604651,
+    "accuracy_pct": "14.48%",
+    "improvement": "1.00x"
+  },
+  "pb_repeat": {
+    "draws_checked": 430,
+    "total_numbers": 2150,
+    "repeats": 145,
+    "repeat_rate": 0.06744186046511629,
+    "repeat_pct": "6.74%"
+  },
+  "pb_constraints": {
+    "total": 431,
+    "passed": 216,
+    "pass_rate": 0.5011600928074246,
+    "pass_pct": "50.12%"
+  }
+}
