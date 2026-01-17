@@ -155,16 +155,17 @@ def load_jackpots():
         if path.exists():
             with open(path, encoding='utf-8') as f:
                 raw = json.load(f)
-            # Normalize keys: uppercase -> lowercase, cashValue -> cash_value
+            # Normalize keys: uppercase -> lowercase
             normalized = {}
             for key, val in raw.items():
                 if key == 'lastUpdated':
                     continue
                 lkey = key.lower()
                 if isinstance(val, dict):
+                    # Handle both old format (amount/cashValue) and new format (jackpot/cash_value)
                     normalized[lkey] = {
-                        'jackpot': val.get('amount', ''),
-                        'cash_value': val.get('cashValue', 0),
+                        'jackpot': val.get('jackpot') or val.get('amount', 0),
+                        'cash_value': val.get('cash_value') or val.get('cashValue', 0),
                         'next_draw': val.get('nextDraw', ''),
                         'schedule': val.get('schedule', '')
                     }
@@ -798,9 +799,11 @@ def generate_newsletter_html(draws_by_lottery, jackpots):
                 </div>
 '''
         else:
-            jackpot_str = jp.get('jackpot', '')  # Already formatted string like "$179M"
+            jackpot_val = jp.get('jackpot', 0)
+            # Format jackpot if it's a number, otherwise use as string
+            jackpot_str = format_money(jackpot_val) if isinstance(jackpot_val, (int, float)) else jackpot_val
             cash = jp.get('cash_value', 0)
-            if jackpot_str or cash:
+            if jackpot_val or cash:
                 after_tax = calculate_after_tax(cash, 'OK') if cash else 0
                 jackpot_html = f'''
                 <div class="jackpot-section">

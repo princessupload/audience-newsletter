@@ -265,37 +265,90 @@ def update_jackpots():
     
     jackpots = {}
     
-    # Powerball jackpot from CT Lottery
+    # Powerball jackpot - Try powerball.com first
+    pb_found = False
     try:
-        content = fetch_url('https://www.ctlottery.org/Modules/Games/RSS.aspx?game=Powerball')
+        content = fetch_url('https://www.powerball.com/')
         if content:
-            match = re.search(r'Jackpot[:\s]*\$?([\d,.]+)\s*(Million|Billion)?', content, re.I)
+            # Look for jackpot - format: "$179 MILLION" or "$1.5 BILLION"
+            match = re.search(r'\$(\d+(?:\.\d+)?)\s*(Million|Billion)', content, re.I)
             if match:
-                amount = float(match.group(1).replace(',', ''))
-                multiplier = 1_000_000_000 if match.group(2) and 'billion' in match.group(2).lower() else 1_000_000
+                amount = float(match.group(1))
+                if 'billion' in match.group(2).lower():
+                    amount *= 1000
+                # Look for cash value
+                cash_match = re.search(r'Cash\s*Value[:\s]*\$(\d+(?:\.\d+)?)\s*M', content, re.I)
+                cash = int(float(cash_match.group(1)) * 1_000_000) if cash_match else int(amount * 450_000)
                 jackpots['pb'] = {
-                    'jackpot': int(amount * multiplier),
-                    'cash_value': int(amount * multiplier * 0.5)  # Approximate cash value
+                    'jackpot': int(amount * 1_000_000),
+                    'cash_value': cash
                 }
-                print(f"  ✓ PB: ${amount} {match.group(2) or 'Million'}")
+                print(f"  ✓ PB: ${amount}M (from powerball.com)")
+                pb_found = True
     except Exception as e:
-        print(f"  ⚠️ PB jackpot error: {e}")
+        print(f"  ⚠️ PB powerball.com error: {e}")
     
-    # Mega Millions jackpot
+    # PB fallback - Virginia Lottery
+    if not pb_found:
+        try:
+            content = fetch_url('https://www.valottery.com/data/draw-games/powerball')
+            if content:
+                match = re.search(r'\$(\d+)\s*MILLION', content, re.IGNORECASE)
+                if match:
+                    amount = int(match.group(1))
+                    cash_match = re.search(r'Cash\s*Value[:\s]*\$(\d+)M?', content, re.IGNORECASE)
+                    cash = int(cash_match.group(1)) * 1_000_000 if cash_match else int(amount * 450_000)
+                    jackpots['pb'] = {
+                        'jackpot': amount * 1_000_000,
+                        'cash_value': cash
+                    }
+                    print(f"  ✓ PB: ${amount}M (from Virginia Lottery)")
+                    pb_found = True
+        except Exception as e:
+            print(f"  ⚠️ PB Virginia error: {e}")
+    
+    if not pb_found:
+        jackpots['pb'] = {'jackpot': 179_000_000, 'cash_value': 80_000_000}
+        print(f"  ⚠️ PB: Using fallback estimate")
+    
+    # Mega Millions jackpot - Try Virginia Lottery first (most reliable)
+    mm_found = False
     try:
-        content = fetch_url('https://www.megamillions.com/cmspages/jackpothome.aspx')
+        content = fetch_url('https://www.valottery.com/data/draw-games/megamillions')
         if content:
-            match = re.search(r'\$?([\d,.]+)\s*(Million|Billion)', content, re.I)
+            # Look for jackpot - format: "$230 MILLION" or "Friday Jackpot: $230 MILLION"
+            match = re.search(r'\$(\d+)\s*MILLION', content, re.IGNORECASE)
             if match:
-                amount = float(match.group(1).replace(',', ''))
-                multiplier = 1_000_000_000 if 'billion' in match.group(2).lower() else 1_000_000
+                amount = int(match.group(1))
+                # Look for cash value - format: "Est. Cash Value: $105M"
+                cash_match = re.search(r'Cash\s*Value[:\s]*\$(\d+)M?', content, re.IGNORECASE)
+                cash = int(cash_match.group(1)) * 1_000_000 if cash_match else int(amount * 457000)
                 jackpots['mm'] = {
-                    'jackpot': int(amount * multiplier),
-                    'cash_value': int(amount * multiplier * 0.5)
+                    'jackpot': amount * 1_000_000,
+                    'cash_value': cash
                 }
-                print(f"  ✓ MM: ${amount} {match.group(2)}")
+                print(f"  ✓ MM: ${amount}M (from Virginia Lottery)")
+                mm_found = True
     except Exception as e:
-        print(f"  ⚠️ MM jackpot error: {e}")
+        print(f"  ⚠️ MM Virginia error: {e}")
+    
+    # MM fallback - megamillions.com main page
+    if not mm_found:
+        try:
+            content = fetch_url('https://www.megamillions.com/')
+            if content:
+                match = re.search(r'\$(\d+)\s*(Million|Billion)', content, re.I)
+                if match:
+                    amount = int(match.group(1))
+                    if 'billion' in match.group(2).lower():
+                        amount *= 1000
+                    jackpots['mm'] = {
+                        'jackpot': amount * 1_000_000,
+                        'cash_value': int(amount * 457000)
+                    }
+                    print(f"  ✓ MM: ${amount}M (from megamillions.com)")
+        except Exception as e:
+            print(f"  ⚠️ MM jackpot error: {e}")
     
     # L4L is always $1000/day for life (fixed)
     jackpots['l4l'] = {
@@ -303,11 +356,31 @@ def update_jackpots():
         'cash_value': 5_750_000
     }
     
-    # LA jackpot (estimate based on typical values)
-    jackpots['la'] = {
-        'jackpot': 2_000_000,
-        'cash_value': 1_200_000
-    }
+    # LA jackpot - Try powerball.com/lotto-america
+    la_found = False
+    try:
+        content = fetch_url('https://www.powerball.com/lotto-america')
+        if content:
+            # Look for jackpot amount
+            match = re.search(r'\$([\d.]+)\s*M', content)
+            if match:
+                amount = float(match.group(1))
+                jackpots['la'] = {
+                    'jackpot': int(amount * 1_000_000),
+                    'cash_value': int(amount * 450_000)
+                }
+                print(f"  ✓ LA: ${amount}M (from powerball.com)")
+                la_found = True
+    except Exception as e:
+        print(f"  ⚠️ LA jackpot error: {e}")
+    
+    if not la_found:
+        # LA fallback - estimate
+        jackpots['la'] = {
+            'jackpot': 12_980_000,
+            'cash_value': 5_800_000
+        }
+        print(f"  ⚠️ LA: Using fallback estimate")
     
     # Save jackpots
     jackpot_file = DATA_DIR / 'jackpots.json'
