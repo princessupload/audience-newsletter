@@ -94,7 +94,7 @@ LOTTERY_CONFIG = {
         'main_count': 5,
         'strategy': 'HOLD_REVIEW',
         'strategy_desc': 'Pick once, review every ~2 years',
-        'optimal_window': 200,  # Optimized via walk-forward testing
+        'optimal_window': 300,  # Walk-forward tested - 300 is best for PB
         'pattern_stability': 46.7,
         'best_methods': ['Position Frequency (2.46× validated)', 'Constraint Filter'],
         'grand_prize': None,
@@ -117,7 +117,7 @@ LOTTERY_CONFIG = {
         'main_count': 5,
         'strategy': 'NEXT_DRAW',
         'strategy_desc': 'Pick fresh EACH draw',
-        'optimal_window': 30,
+        'optimal_window': 81,  # Use ALL data for MM (limited draws)
         'pattern_stability': None,
         'best_methods': ['Position Frequency (~2.5× estimated)', 'Limited data (81 draws)'],
         'grand_prize': None,
