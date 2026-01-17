@@ -958,9 +958,11 @@ def generate_newsletter_html(draws_by_lottery, jackpots):
         if not draws:
             continue
         
-        # Generate pools
-        position_pools = generate_position_pools(draws, config['main_count'], config['optimal_window'])
-        bonus_pool = generate_bonus_pool(draws, config['optimal_window'])
+        # Generate pools - HOLD strategy uses ALL data for maximum stability
+        # NEXT_DRAW strategy would use optimal_window, but we recommend HOLD for all lotteries
+        pool_window = len(draws)  # Use ALL data for HOLD strategy (proven more stable)
+        position_pools = generate_position_pools(draws, config['main_count'], pool_window)
+        bonus_pool = generate_bonus_pool(draws, pool_window)
         hot_numbers = get_hot_numbers(draws, window=20)
         last_draw = get_last_draw_numbers(draws)
         constraints = config['constraints']
