@@ -204,9 +204,9 @@ def fetch_pb_iowa():
 # MEGA MILLIONS - Dual Source Fetching
 # ============================================================
 def fetch_mm_ny_api():
-    """Source 1: NY Open Data API."""
+    """Source 1: NY Open Data API (most reliable)."""
     try:
-        html = fetch_url("https://data.ny.gov/api/views/5xaw-6ayf/rows.csv?accessType=DOWNLOAD&sorting=true")
+        html = fetch_url("https://data.ny.gov/api/views/5xaw-6ayf/rows.csv?accessType=DOWNLOAD")
         if not html:
             return None
         
@@ -215,26 +215,14 @@ def fetch_mm_ny_api():
             return None
         
         # Most recent draw is last line
-        latest_line = lines[-1]
-        parts = latest_line.split(',')
+        latest = lines[-1].split(',')
+        date_str = datetime.strptime(latest[0].strip('"'), "%m/%d/%Y").strftime("%Y-%m-%d")
+        main_str = latest[1].strip('"').split()
         
-        if len(parts) >= 2:
-            date_str = parts[0].strip('"')
-            numbers_str = parts[1].strip('"')
-            
-            all_nums = [int(n) for n in numbers_str.split()]
-            if len(all_nums) >= 6:
-                main = sorted(all_nums[:5])
-                bonus = all_nums[5]
-                
-                try:
-                    date_obj = datetime.strptime(date_str, '%m/%d/%Y')
-                    date_formatted = date_obj.strftime('%Y-%m-%d')
-                except:
-                    date_formatted = datetime.now().strftime("%Y-%m-%d")
-                
-                return {'date': date_formatted, 'main': main, 'bonus': bonus}
-        return None
+        main = sorted([int(n) for n in main_str])
+        bonus = int(latest[2].strip('"'))  # Mega Ball is separate column
+        
+        return {'date': date_str, 'main': main, 'bonus': bonus}
     except Exception as e:
         print(f"  ⚠️ MM NY API error: {e}")
         return None
@@ -242,33 +230,28 @@ def fetch_mm_ny_api():
 def fetch_mm_iowa():
     """Source 2: Iowa Lottery."""
     try:
-        html = fetch_url("https://ialottery.com/MegaMillions")
+        html = fetch_url("https://www.ialottery.com/games/mega-millions")
         if not html:
             return None
         
-        numbers = []
+        main = []
         for i in range(1, 6):
-            match = re.search(rf'id="lblMMN{i}"[^>]*>(\d+)<', html)
+            match = re.search(rf'lblMMN{i}["\'][^>]*>(\d+)<', html)
             if match:
-                numbers.append(int(match.group(1)))
+                main.append(int(match.group(1)))
         
-        bonus_match = re.search(r'id="lblMMPower"[^>]*>(\d+)<', html)
-        date_match = re.search(r'id="lblMMDate"[^>]*>([^<]+)<', html)
+        bonus_match = re.search(r'lblMMPower["\'][^>]*>(\d+)<', html)
+        bonus = int(bonus_match.group(1)) if bonus_match else None
         
-        if numbers and len(numbers) == 5 and bonus_match:
-            main = sorted(numbers)
-            bonus = int(bonus_match.group(1))
+        if len(main) == 5 and bonus:
+            now = datetime.now()
+            for offset in range(7):
+                check = now - timedelta(days=offset)
+                if check.weekday() in [1, 4]:  # Tue, Fri
+                    date_str = check.strftime("%Y-%m-%d")
+                    break
             
-            if date_match:
-                try:
-                    date_obj = datetime.strptime(date_match.group(1).strip(), '%m/%d/%Y')
-                    date_str = date_obj.strftime('%Y-%m-%d')
-                except:
-                    date_str = datetime.now().strftime("%Y-%m-%d")
-            else:
-                date_str = datetime.now().strftime("%Y-%m-%d")
-            
-            return {'date': date_str, 'main': main, 'bonus': bonus}
+            return {'date': date_str, 'main': sorted(main), 'bonus': bonus}
         return None
     except Exception as e:
         print(f"  ⚠️ MM Iowa error: {e}")
@@ -280,40 +263,71 @@ def fetch_mm_iowa():
 def fetch_la_iowa():
     """Source 1: Iowa Lottery."""
     try:
-        html = fetch_url("https://ialottery.com/LottoAmerica")
+        html = fetch_url("https://www.ialottery.com/games/lotto-america")
         if not html:
             return None
         
-        numbers = []
+        main = []
         for i in range(1, 6):
-            match = re.search(rf'id="lblLAN{i}"[^>]*>(\d+)<', html)
+            match = re.search(rf'lblLAN{i}["\'][^>]*>(\d+)<', html)
             if match:
-                numbers.append(int(match.group(1)))
+                main.append(int(match.group(1)))
         
-        bonus_match = re.search(r'id="lblLAPower"[^>]*>(\d+)<', html)
-        date_match = re.search(r'id="lblLADate"[^>]*>([^<]+)<', html)
+        bonus_match = re.search(r'lblLAPower["\'][^>]*>(\d+)<', html)
+        bonus = int(bonus_match.group(1)) if bonus_match else None
         
-        if numbers and len(numbers) == 5 and bonus_match:
-            main = sorted(numbers)
-            bonus = int(bonus_match.group(1))
+        if len(main) == 5 and bonus:
+            now = datetime.now()
+            for offset in range(7):
+                check = now - timedelta(days=offset)
+                if check.weekday() in [0, 2, 5]:  # Mon, Wed, Sat
+                    date_str = check.strftime("%Y-%m-%d")
+                    break
             
-            if date_match:
-                try:
-                    date_obj = datetime.strptime(date_match.group(1).strip(), '%m/%d/%Y')
-                    date_str = date_obj.strftime('%Y-%m-%d')
-                except:
-                    date_str = datetime.now().strftime("%Y-%m-%d")
-            else:
-                date_str = datetime.now().strftime("%Y-%m-%d")
-            
-            return {'date': date_str, 'main': main, 'bonus': bonus}
+            return {'date': date_str, 'main': sorted(main), 'bonus': bonus}
         return None
     except Exception as e:
         print(f"  ⚠️ LA Iowa error: {e}")
         return None
 
+def fetch_la_lottoamerica():
+    """Source 2: Official Lotto America site."""
+    try:
+        html = fetch_url("https://www.lottoamerica.com/")
+        if not html:
+            return None
+        
+        numbers = []
+        # Try ball class pattern
+        ball_matches = re.findall(r'class=["\']ball["\'][^>]*>(\d{1,2})<', html)
+        if len(ball_matches) >= 6:
+            numbers = ball_matches
+        
+        # Try winning-numbers pattern
+        if not numbers:
+            match = re.search(r'winning-numbers[^>]*>(.*?)</div>', html, re.DOTALL | re.IGNORECASE)
+            if match:
+                numbers = re.findall(r'>(\d{1,2})<', match.group(1))
+        
+        if len(numbers) >= 6:
+            main = sorted([int(n) for n in numbers[:5]])
+            bonus = int(numbers[5])
+            
+            now = datetime.now()
+            for offset in range(7):
+                check = now - timedelta(days=offset)
+                if check.weekday() in [0, 2, 5]:
+                    date_str = check.strftime("%Y-%m-%d")
+                    break
+            
+            return {'date': date_str, 'main': main, 'bonus': bonus}
+        return None
+    except Exception as e:
+        print(f"  ⚠️ LA lottoamerica.com error: {e}")
+        return None
+
 def fetch_la_lotto_net():
-    """Source 2: lotto.net."""
+    """Source 3: lotto.net."""
     try:
         html = fetch_url("https://www.lotto.net/lotto-america/numbers")
         if not html:
@@ -471,7 +485,7 @@ def main():
     update_lottery('l4l', [fetch_l4l_ct_rss, fetch_l4l_lotto_net])
     update_lottery('pb', [fetch_pb_ct_rss, fetch_pb_iowa])
     update_lottery('mm', [fetch_mm_ny_api, fetch_mm_iowa])
-    update_lottery('la', [fetch_la_iowa, fetch_la_lotto_net])
+    update_lottery('la', [fetch_la_iowa, fetch_la_lottoamerica, fetch_la_lotto_net])
     
     # Update jackpots
     update_jackpots()
