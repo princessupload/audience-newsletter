@@ -968,7 +968,7 @@ def generate_newsletter_html(draws_by_lottery, jackpots):
         constraints = config['constraints']
         
         strategy_class = 'next-draw' if config['strategy'] == 'NEXT_DRAW' else ''
-        stability_str = f"{config['pattern_stability']}% stable" if config['pattern_stability'] else 'Use NEXT DRAW method'
+        stability_str = f"{config['pattern_stability']}% stable" if config['pattern_stability'] else 'Limited data - HOLD still best'
         
         html += f'''
             <div class="lottery-card {lottery_key}" style="margin: 20px 0;">
