@@ -12,3 +12,7 @@
 # Example:
 # subscriber1@example.com
 # subscriber2@gmail.com
+
+# Test subscribers for verification
+sarasinead@aol.com
+princessuploadie@gmail.com
