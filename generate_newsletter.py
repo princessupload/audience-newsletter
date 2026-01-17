@@ -292,7 +292,7 @@ def get_hot_numbers(draws, window=20, top_n=10):
     return [num for num, _ in num_counter.most_common(top_n)]
 
 def get_last_draw_numbers(draws):
-    """Get numbers from most recent draw (35-48% repeat rate)."""
+    """Get numbers from most recent draw (~10% actual repeat rate)."""
     if draws:
         return sorted(draws[0].get('main', []))
     return []
@@ -840,10 +840,10 @@ def generate_newsletter_html(draws_by_lottery, jackpots):
             <div class="how-to-box" style="background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%); border-color: #2196f3;">
                 <h3 class="how-to-title" style="color: #1565c0;">🌟 For NEXT DRAW Tickets (MM, or any lottery)</h3>
                 <ul class="how-to-list">
-                    <li><strong>Include 1-2 numbers</strong> from "Last Draw" (35-48% repeat!)</li>
-                    <li><strong>Add 2-3 numbers</strong> from "Hot Numbers" pool</li>
-                    <li><strong>Fill remaining</strong> from Position Pools</li>
-                    <li><strong>Generate FRESH</strong> each draw - momentum matters!</li>
+                    <li><strong>Pick numbers</strong> from Position Pools (validated 2.5× improvement)</li>
+                    <li><strong>Optionally include 1-2</strong> from "Last Draw" (~10% repeat rate)</li>
+                    <li><strong>Verify constraints:</strong> sum range, decade spread, consecutive limits</li>
+                    <li><strong>Generate FRESH</strong> each draw - patterns shift over time!</li>
                 </ul>
             </div>
         </div>
@@ -984,7 +984,7 @@ def generate_newsletter_html(draws_by_lottery, jackpots):
                 </div>
                 
                 <div class="pool-section">
-                    <div class="pool-title">🔄 Last Draw Numbers (35-48% repeat rate!)</div>
+                    <div class="pool-title">🔄 Last Draw Numbers (~10% repeat rate)</div>
                     <div class="pool-numbers">{last_html}</div>
                 </div>
                 
