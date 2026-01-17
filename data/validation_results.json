@@ -25,6 +25,19 @@
     "repeat_rate": 0.11189343482397716,
     "repeat_pct": "11.19%"
   },
+  "l4l_proven_combos": {
+    "train_size": 211,
+    "test_size": 841,
+    "proven_combos_in_pool": 143,
+    "draws_with_proven_combo": 84,
+    "draw_rate": 0.09988109393579073,
+    "draw_rate_pct": "9.99%",
+    "total_proven_hits": 89,
+    "total_possible_combos": 8410,
+    "combo_hit_rate": 0.010582639714625445,
+    "combo_hit_rate_pct": "1.06%",
+    "improvement": "1.28x"
+  },
   "l4l_constraints": {
     "total": 1052,
     "passed": 919,
@@ -57,6 +70,19 @@
     "repeat_rate": 0.09906976744186047,
     "repeat_pct": "9.91%"
   },
+  "la_proven_combos": {
+    "train_size": 87,
+    "test_size": 344,
+    "proven_combos_in_pool": 18,
+    "draws_with_proven_combo": 1,
+    "draw_rate": 0.0029069767441860465,
+    "draw_rate_pct": "0.29%",
+    "total_proven_hits": 1,
+    "total_possible_combos": 3440,
+    "combo_hit_rate": 0.00029069767441860465,
+    "combo_hit_rate_pct": "0.03%",
+    "improvement": "0.36x"
+  },
   "la_constraints": {
     "total": 431,
     "passed": 370,
@@ -88,6 +114,19 @@
     "repeats": 145,
     "repeat_rate": 0.06744186046511629,
     "repeat_pct": "6.74%"
+  },
+  "pb_proven_combos": {
+    "train_size": 87,
+    "test_size": 344,
+    "proven_combos_in_pool": 13,
+    "draws_with_proven_combo": 0,
+    "draw_rate": 0.0,
+    "draw_rate_pct": "0.00%",
+    "total_proven_hits": 0,
+    "total_possible_combos": 3440,
+    "combo_hit_rate": 0.0,
+    "combo_hit_rate_pct": "0.00%",
+    "improvement": "0.00x"
   },
   "pb_constraints": {
     "total": 431,

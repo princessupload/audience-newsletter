@@ -148,6 +148,62 @@ def validate_repeat_pattern(draws):
         'repeat_pct': f"{repeat_rate * 100:.2f}%"
     }
 
+def validate_proven_combos(draws, train_ratio=0.8):
+    """
+    Walk-forward validation of proven 3-combos method.
+    Train on older draws, test if proven combos predict future wins.
+    """
+    if len(draws) < 100:
+        return None
+    
+    split_idx = int(len(draws) * train_ratio)
+    train_draws = draws[split_idx:]  # Older draws
+    test_draws = draws[:split_idx]   # Newer draws
+    
+    # Find all 3-combos that appeared 2+ times in training data
+    combo_counts = Counter()
+    for draw in train_draws:
+        main = tuple(sorted(draw.get('main', [])))
+        for combo in combinations(main, 3):
+            combo_counts[combo] += 1
+    
+    proven_combos = {combo for combo, count in combo_counts.items() if count >= 2}
+    
+    # Test: How often do test draws contain at least one proven combo?
+    draws_with_proven = 0
+    total_proven_hits = 0
+    total_possible_combos = 0
+    
+    for draw in test_draws:
+        main = tuple(sorted(draw.get('main', [])))
+        draw_combos = list(combinations(main, 3))
+        total_possible_combos += len(draw_combos)
+        
+        hits = sum(1 for c in draw_combos if c in proven_combos)
+        total_proven_hits += hits
+        if hits > 0:
+            draws_with_proven += 1
+    
+    # Calculate random baseline: probability a random combo is "proven"
+    # For L4L: C(48,3) = 17,296 possible combos, proven ~1000-2000
+    # Chance of hitting at least 1 of 10 combos from a pool is complex
+    
+    hit_rate = total_proven_hits / total_possible_combos if total_possible_combos > 0 else 0
+    draw_rate = draws_with_proven / len(test_draws) if test_draws else 0
+    
+    return {
+        'train_size': len(train_draws),
+        'test_size': len(test_draws),
+        'proven_combos_in_pool': len(proven_combos),
+        'draws_with_proven_combo': draws_with_proven,
+        'draw_rate': draw_rate,
+        'draw_rate_pct': f"{draw_rate * 100:.2f}%",
+        'total_proven_hits': total_proven_hits,
+        'total_possible_combos': total_possible_combos,
+        'combo_hit_rate': hit_rate,
+        'combo_hit_rate_pct': f"{hit_rate * 100:.2f}%"
+    }
+
 def validate_constraints(draws):
     """
     Validate that constraint filters capture 95% of winning tickets.
@@ -244,6 +300,29 @@ def main():
             print(f"   Draws checked: {repeat_result['draws_checked']}")
             print(f"   Repeat rate: {repeat_result['repeat_pct']}")
             results[f'{lottery}_repeat'] = repeat_result
+        
+        # Proven Combos
+        combo_result = validate_proven_combos(draws)
+        if combo_result:
+            # Calculate random baseline for comparison
+            max_num = max_nums[lottery]
+            total_possible_3combos = (max_num * (max_num-1) * (max_num-2)) // 6
+            proven_ratio = combo_result['proven_combos_in_pool'] / total_possible_3combos
+            # A random ticket has 10 combos, expected to hit = 10 * proven_ratio
+            expected_random = 10 * proven_ratio
+            actual_per_draw = combo_result['total_proven_hits'] / combo_result['test_size'] if combo_result['test_size'] > 0 else 0
+            improvement = actual_per_draw / expected_random if expected_random > 0 else 0
+            
+            print(f"\n🎯 PROVEN 3-COMBOS:")
+            print(f"   Train: {combo_result['train_size']} draws, Test: {combo_result['test_size']} draws")
+            print(f"   Proven combos in pool: {combo_result['proven_combos_in_pool']}")
+            print(f"   Draws with ≥1 proven combo: {combo_result['draws_with_proven_combo']} ({combo_result['draw_rate_pct']})")
+            print(f"   Total proven hits: {combo_result['total_proven_hits']}")
+            print(f"   vs Random: {improvement:.2f}x")
+            results[f'{lottery}_proven_combos'] = {
+                **combo_result,
+                'improvement': f"{improvement:.2f}x"
+            }
         
         # Constraint Validation
         const_result = validate_constraints(draws)

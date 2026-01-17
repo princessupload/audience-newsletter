@@ -979,7 +979,7 @@ def generate_newsletter_html(draws_by_lottery, jackpots):
         
         html += f'''
                 <div class="pool-section">
-                    <div class="pool-title">🔥 Hot Numbers (last 20 draws)</div>
+                    <div class="pool-title">🔥 Hot Numbers (NOT validated - for reference only)</div>
                     <div class="pool-numbers">{hot_html}</div>
                 </div>
                 
