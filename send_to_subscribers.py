@@ -101,8 +101,11 @@ def get_all_subscribers():
     return active
 
 def load_newsletter():
-    """Load latest newsletter HTML."""
-    newsletter_file = OUTPUT_DIR / 'latest.html'
+    """Load email-optimized newsletter HTML (with inline styles for email clients)."""
+    # Use email-optimized version if available, fallback to latest.html
+    newsletter_file = OUTPUT_DIR / 'email_latest.html'
+    if not newsletter_file.exists():
+        newsletter_file = OUTPUT_DIR / 'latest.html'
     if not newsletter_file.exists():
         return None, None
     

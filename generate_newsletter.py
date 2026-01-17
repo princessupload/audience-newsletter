@@ -1358,6 +1358,184 @@ def generate_embed_snippet(draws_by_lottery, jackpots):
     
     return snippet
 
+def generate_email_newsletter_html(draws_by_lottery, jackpots):
+    """Generate email-safe HTML with inline styles and strong contrast (teal theme)."""
+    now_utc = datetime.now(pytz.UTC)
+    ok_time = now_utc.astimezone(TIMEZONES['CT'])
+    current_date = ok_time.strftime('%B %d, %Y')
+    times_str = get_times_string()
+    
+    html = f'''<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lottery Newsletter - {current_date}</title>
+</head>
+<body style="font-family: Georgia, serif; background: #e0f7fa; margin: 0; padding: 20px; color: #1a1a1a;">
+<div style="max-width: 650px; margin: 0 auto; background: #ffffff; border-radius: 20px; border: 4px solid #00838f; box-shadow: 0 4px 20px rgba(0,131,143,0.3); overflow: hidden;">
+    
+    <!-- HEADER -->
+    <div style="background: linear-gradient(135deg, #e0f7fa, #b2ebf2, #80deea); color: #006064; padding: 25px; text-align: center;">
+        <h1 style="margin: 0 0 8px 0; font-size: 24px; color: #006064;">💎 Lottery Newsletter 💎</h1>
+        <div style="font-size: 14px; color: #00838f;">📅 {current_date}</div>
+        <div style="background: #00838f; padding: 8px 16px; border-radius: 20px; margin-top: 12px; display: inline-block; font-size: 13px; color: #ffffff; border: 2px solid #006064; font-weight: bold;">Build Your Own Winning Tickets!</div>
+    </div>
+    
+    <!-- JACKPOTS SECTION -->
+    <div style="padding: 20px; border-bottom: 3px dashed #80deea; background: #f5fffe;">
+        <div style="color: #00695c; font-size: 18px; font-weight: bold; margin-bottom: 15px; padding-bottom: 8px; border-bottom: 3px solid #26a69a;">💰 Current Jackpots (After OK Taxes)</div>
+'''
+    
+    # Add jackpot cards
+    for lottery_key in ['pb', 'mm', 'la', 'l4l']:
+        config = LOTTERY_CONFIG[lottery_key]
+        jp = jackpots.get(lottery_key, {})
+        schedule = DRAW_SCHEDULES.get(lottery_key, {})
+        
+        if config.get('grand_prize'):
+            jackpot_str = config['grand_prize']
+            cash = config.get('fixed_cash', 5_750_000)
+        else:
+            jackpot_val = jp.get('jackpot', 0)
+            jackpot_str = format_money(jackpot_val) if isinstance(jackpot_val, (int, float)) and jackpot_val else 'TBD'
+            cash = jp.get('cash_value', 0)
+        
+        after_tax = calculate_after_tax(cash, 'OK') if cash else 0
+        after_tax_str = format_money(after_tax) if after_tax else 'TBD'
+        
+        html += f'''
+        <div style="background: #e8f5e9; border: 2px solid #4caf50; border-radius: 12px; padding: 12px; margin: 10px 0;">
+            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap;">
+                <span style="font-weight: bold; color: #1b5e20; font-size: 16px;">{config['emoji']} {config['name']}</span>
+                <span style="background: #2e7d32; color: white; padding: 4px 12px; border-radius: 15px; font-size: 14px; font-weight: bold;">{jackpot_str}</span>
+            </div>
+            <div style="margin-top: 8px; font-size: 13px; color: #2d2d2d;">
+                <strong>💵 After Taxes:</strong> <span style="color: #1b5e20; font-weight: bold;">{after_tax_str}</span>
+                <span style="margin-left: 15px;">📆 {schedule.get('schedule_text', 'TBD')} @ {schedule.get('time', 'TBD')} CT</span>
+            </div>
+        </div>
+'''
+    
+    html += '''
+    </div>
+    
+    <!-- LATEST RESULTS -->
+    <div style="padding: 20px; border-bottom: 3px dashed #80deea; background: #ffffff;">
+        <div style="color: #00695c; font-size: 18px; font-weight: bold; margin-bottom: 15px; padding-bottom: 8px; border-bottom: 3px solid #26a69a;">🎱 Latest Drawing Results</div>
+'''
+    
+    for lottery_key in ['l4l', 'la', 'pb', 'mm']:
+        config = LOTTERY_CONFIG[lottery_key]
+        draws = draws_by_lottery.get(lottery_key, [])
+        if not draws:
+            continue
+        
+        latest = draws[0]
+        main_nums = sorted(latest.get('main', []))
+        bonus = latest.get('bonus', '?')
+        draw_date = latest.get('date', 'Unknown')
+        
+        balls_html = ''.join([f'<span style="display:inline-block;width:32px;height:32px;border-radius:50%;font-weight:bold;font-size:14px;background:#ffffff;border:3px solid #00838f;color:#006064;text-align:center;line-height:26px;margin:0 2px;">{n}</span>' for n in main_nums])
+        
+        html += f'''
+        <div style="background: #f5f5f5; border-radius: 10px; padding: 12px; margin: 10px 0; border-left: 4px solid #00838f;">
+            <div style="font-weight: bold; color: #006064; margin-bottom: 8px;">{config['emoji']} {config['name']} - {draw_date}</div>
+            <div style="margin: 5px 0;">
+                {balls_html}
+                <span style="font-size: 16px; color: #006064; margin: 0 4px; font-weight: bold;">+</span>
+                <span style="display:inline-block;width:32px;height:32px;border-radius:50%;font-weight:bold;font-size:14px;background:#ffeb3b;border:3px solid #f9a825;color:#5d4037;text-align:center;line-height:26px;margin:0 2px;">{bonus}</span>
+                <span style="font-size: 11px; color: #5d4037; margin-left: 5px;">{config['bonus_name']}</span>
+            </div>
+        </div>
+'''
+    
+    html += '''
+    </div>
+    
+    <!-- HOW TO BUILD YOUR TICKET -->
+    <div style="padding: 20px; border-bottom: 3px dashed #80deea; background: #f5fffe;">
+        <div style="color: #00695c; font-size: 18px; font-weight: bold; margin-bottom: 15px; padding-bottom: 8px; border-bottom: 3px solid #26a69a;">🎯 How To Build Your HOLD Ticket</div>
+        
+        <div style="background: #fff3e0; border: 3px solid #ff9800; border-radius: 12px; padding: 15px; margin-bottom: 15px;">
+            <p style="margin: 0; color: #e65100; font-weight: bold; text-align: center; font-size: 15px;">🏆 HOLD Tickets Beat NEXT PLAY for ALL Lotteries!</p>
+            <p style="margin: 10px 0 0 0; color: #5d4037; font-size: 13px; text-align: center;">Pick ONE ticket per lottery and STICK WITH IT forever - proven 2.5× better odds!</p>
+        </div>
+        
+        <div style="background: #e8f5e9; border: 2px solid #4caf50; border-radius: 10px; padding: 12px; font-size: 13px; color: #1b5e20;">
+            <strong>📌 Steps:</strong><br>
+            1️⃣ Pick 1 number from each Position Pool below<br>
+            2️⃣ Pick 1 bonus from the Bonus Pool<br>
+            3️⃣ Verify sum is in range, 3+ decades, max 1 consecutive pair<br>
+            4️⃣ PLAY THIS SAME TICKET EVERY DRAW - never change it!
+        </div>
+    </div>
+    
+    <!-- NUMBER POOLS -->
+    <div style="padding: 20px; border-bottom: 3px dashed #80deea; background: #ffffff;">
+        <div style="color: #00695c; font-size: 18px; font-weight: bold; margin-bottom: 15px; padding-bottom: 8px; border-bottom: 3px solid #26a69a;">🔢 Position Pools By Lottery</div>
+'''
+    
+    # Add pools for each lottery
+    for lottery_key in ['l4l', 'la', 'pb', 'mm']:
+        config = LOTTERY_CONFIG[lottery_key]
+        draws = draws_by_lottery.get(lottery_key, [])
+        if not draws:
+            continue
+        
+        pool_window = len(draws)
+        position_pools = generate_position_pools(draws, config['main_count'], pool_window)
+        bonus_pool = generate_bonus_pool(draws, pool_window)
+        constraints = config['constraints']
+        improvement = {'l4l': '2.57×', 'la': '2.62×', 'pb': '2.46×', 'mm': '~2.5×'}.get(lottery_key, '2.5×')
+        
+        html += f'''
+        <div style="background: #e0f7fa; border: 3px solid #00838f; border-radius: 12px; padding: 15px; margin: 15px 0;">
+            <div style="font-weight: bold; color: #006064; font-size: 16px; margin-bottom: 10px; border-bottom: 2px solid #26a69a; padding-bottom: 8px;">
+                {config['emoji']} {config['name']} <span style="font-size: 12px; background: #00838f; color: white; padding: 2px 8px; border-radius: 10px; margin-left: 10px;">{improvement} better</span>
+            </div>
+'''
+        
+        for i, pool in enumerate(position_pools):
+            pool_str = ', '.join(map(str, pool))
+            html += f'''
+            <div style="margin: 6px 0; font-size: 13px; color: #1a1a1a;">
+                <strong style="color: #006064;">Position {i+1}:</strong> {pool_str}
+            </div>
+'''
+        
+        bonus_str = ', '.join(map(str, bonus_pool))
+        html += f'''
+            <div style="margin: 10px 0 6px 0; padding-top: 8px; border-top: 1px dashed #80deea; font-size: 13px; color: #1a1a1a;">
+                <strong style="color: #f57c00;">🎱 {config['bonus_name']}:</strong> {bonus_str}
+            </div>
+            <div style="margin-top: 10px; padding: 8px; background: #fff8e1; border-radius: 8px; font-size: 12px; color: #5d4037;">
+                ✅ <strong>Verify:</strong> Sum {constraints['sum_range'][0]}-{constraints['sum_range'][1]} | {constraints['min_decades']}+ decades | Max {constraints['max_consecutive']} consecutive
+            </div>
+        </div>
+'''
+    
+    html += f'''
+    </div>
+    
+    <!-- FOOTER -->
+    <div style="background: linear-gradient(135deg, #e0f7fa, #b2ebf2, #80deea); color: #006064; padding: 25px; text-align: center; font-size: 13px;">
+        <p style="font-size: 16px; margin-bottom: 10px; color: #006064;">💎 With love from Princess Upload 💎</p>
+        <p style="color: #1a1a1a;"><a href="https://twitch.tv/princessupload" style="color: #00838f; font-weight: bold;">📺 Twitch</a> | <a href="https://youtube.com/@princessuploadie" style="color: #c62828; font-weight: bold;">▶️ YouTube</a></p>
+        <p style="margin-top: 15px; font-size: 11px; color: #5d4037;">
+            🎰 For entertainment purposes only • Generated {times_str}
+        </p>
+        <p style="margin-top: 15px; font-size: 11px; color: #666; border-top: 1px solid #b2ebf2; padding-top: 10px;">
+            To unsubscribe, reply to this email with "UNSUBSCRIBE" in the subject line.
+        </p>
+    </div>
+</div>
+</body>
+</html>'''
+    
+    return html
+
+
 def main():
     """Generate all newsletter outputs."""
     OUTPUT_DIR.mkdir(exist_ok=True)
@@ -1370,7 +1548,7 @@ def main():
     
     jackpots = load_jackpots()
     
-    # Generate full newsletter
+    # Generate full newsletter (for web)
     full_html = generate_newsletter_html(draws_by_lottery, jackpots)
     
     now_utc = datetime.now(pytz.UTC)
@@ -1383,11 +1561,18 @@ def main():
         f.write(full_html)
     print(f"✅ Newsletter saved: {dated_file}")
     
-    # Save as latest.html
+    # Save as latest.html (for web)
     latest_file = OUTPUT_DIR / 'latest.html'
     with open(latest_file, 'w', encoding='utf-8') as f:
         f.write(full_html)
     print(f"✅ Latest saved: {latest_file}")
+    
+    # Generate EMAIL-OPTIMIZED version with inline styles
+    email_html = generate_email_newsletter_html(draws_by_lottery, jackpots)
+    email_file = OUTPUT_DIR / 'email_latest.html'
+    with open(email_file, 'w', encoding='utf-8') as f:
+        f.write(email_html)
+    print(f"✅ Email version saved: {email_file}")
     
     # Generate embed snippet
     embed_html = generate_embed_snippet(draws_by_lottery, jackpots)
@@ -1397,7 +1582,8 @@ def main():
     print(f"✅ Embed snippet saved: {embed_file}")
     
     print(f"\n🎉 Newsletter generation complete!")
-    print(f"   Preview: Open {latest_file} in your browser")
+    print(f"   Web preview: Open {latest_file} in your browser")
+    print(f"   Email preview: Open {email_file} in your browser")
     print(f"   Embed: Copy contents of {embed_file} into Patreon/Substack")
 
 if __name__ == '__main__':
