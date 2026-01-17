@@ -21,19 +21,19 @@ TAX_RATES = {
     'MA': {'federal': 0.24, 'state': 0.05, 'name': 'Massachusetts'}
 }
 
-# Timezones
+# Timezones (all 3 US continental zones)
 TIMEZONES = {
-    'OK': pytz.timezone('America/Chicago'),      # Central Time
-    'CA': pytz.timezone('America/Los_Angeles'),  # Pacific Time
-    'MA': pytz.timezone('America/New_York')      # Eastern Time
+    'PT': pytz.timezone('America/Los_Angeles'),  # Pacific Time
+    'CT': pytz.timezone('America/Chicago'),      # Central Time
+    'ET': pytz.timezone('America/New_York')      # Eastern Time
 }
 
-# Draw schedules (in Central Time)
+# Draw schedules (in Central Time) - CORRECT SCHEDULES
 DRAW_SCHEDULES = {
-    'l4l': {'days': ['Mon', 'Thu'], 'time': '9:38 PM', 'name': 'Lucky for Life'},
-    'la':  {'days': ['Mon', 'Wed', 'Sat'], 'time': '10:00 PM', 'name': 'Lotto America'},
-    'pb':  {'days': ['Mon', 'Wed', 'Sat'], 'time': '9:59 PM', 'name': 'Powerball'},
-    'mm':  {'days': ['Tue', 'Fri'], 'time': '10:00 PM', 'name': 'Mega Millions'}
+    'l4l': {'days': None, 'schedule_text': 'Daily', 'time': '9:38 PM', 'name': 'Lucky for Life'},
+    'la':  {'days': [1, 3, 6], 'schedule_text': 'Mon/Wed/Sat', 'time': '10:00 PM', 'name': 'Lotto America'},
+    'pb':  {'days': [1, 3, 6], 'schedule_text': 'Mon/Wed/Sat', 'time': '9:59 PM', 'name': 'Powerball'},
+    'mm':  {'days': [2, 5], 'schedule_text': 'Tue/Fri', 'time': '10:00 PM', 'name': 'Mega Millions'}
 }
 
 # Lottery configurations with best methods per lottery
@@ -50,7 +50,8 @@ LOTTERY_CONFIG = {
         'optimal_window': 400,
         'pattern_stability': 68.9,
         'best_methods': ['Position Frequency (40-44% stability)', 'Proven 3-Combos', 'Constraint Filter'],
-        'grand_prize': '$1,000/day for LIFE',
+        'grand_prize': '$7K/Week for Life',
+        'fixed_cash': 5_750_000,
         'constraints': {
             'sum_range': (65, 175),
             'min_decades': 3,
@@ -178,15 +179,14 @@ def calculate_after_tax(cash_value, state='OK'):
     return int(cash_value * (1 - total_rate))
 
 def get_times_string():
-    """Get current time in all three timezones."""
+    """Get current time in all three US continental timezones."""
     now_utc = datetime.now(pytz.UTC)
     
     times = []
-    for state, tz in TIMEZONES.items():
+    for zone, tz in TIMEZONES.items():
         local_time = now_utc.astimezone(tz)
         time_str = local_time.strftime('%I:%M %p')
-        state_name = TAX_RATES[state]['name']
-        times.append(f"{state_name}: {time_str}")
+        times.append(f"{zone}: {time_str}")
     
     return ' | '.join(times)
 
@@ -196,38 +196,64 @@ def get_next_draw_info(lottery):
     if not schedule:
         return None, None
     
-    now = datetime.now(TIMEZONES['OK'])
-    days_map = {'Mon': 0, 'Tue': 1, 'Wed': 2, 'Thu': 3, 'Fri': 4, 'Sat': 5, 'Sun': 6}
+    now = datetime.now(TIMEZONES['CT'])
     
-    draw_days = [days_map[d] for d in schedule['days']]
-    current_day = now.weekday()
-    
-    # Find next draw day
-    days_until = None
-    for d in sorted(draw_days):
-        if d > current_day:
-            days_until = d - current_day
-            break
-    if days_until is None:
-        days_until = 7 - current_day + min(draw_days)
-    
-    # Check if draw is today and hasn't happened yet
-    if current_day in draw_days:
+    # Handle Daily schedule (L4L)
+    if schedule['days'] is None:
+        # Daily - check if today's draw happened
         draw_hour = int(schedule['time'].split(':')[0])
         if 'PM' in schedule['time'] and draw_hour != 12:
             draw_hour += 12
+        
         if now.hour < draw_hour:
             days_until = 0
+        else:
+            days_until = 1
+    else:
+        # Specific days
+        draw_days = schedule['days']
+        current_day = now.weekday()
+        
+        # Find next draw day
+        days_until = None
+        for d in sorted(draw_days):
+            if d > current_day:
+                days_until = d - current_day
+                break
+        if days_until is None:
+            days_until = 7 - current_day + min(draw_days)
+        
+        # Check if draw is today and hasn't happened yet
+        if current_day in draw_days:
+            draw_hour = int(schedule['time'].split(':')[0])
+            if 'PM' in schedule['time'] and draw_hour != 12:
+                draw_hour += 12
+            if now.hour < draw_hour:
+                days_until = 0
     
     next_draw = now + timedelta(days=days_until)
     next_draw_str = next_draw.strftime('%A, %B %d')
     
+    # Convert draw time to all 3 timezones
+    draw_time_ct = schedule['time']
+    # PT is 2 hours behind CT, ET is 1 hour ahead
+    draw_hour = int(schedule['time'].split(':')[0])
+    draw_min = schedule['time'].split(':')[1].split()[0]
+    am_pm = 'PM' if 'PM' in schedule['time'] else 'AM'
+    
+    pt_hour = draw_hour - 2
+    et_hour = draw_hour + 1
+    if et_hour > 12:
+        et_hour -= 12
+    
+    time_str = f"{pt_hour}:{draw_min} {am_pm} PT / {draw_hour}:{draw_min} {am_pm} CT / {et_hour}:{draw_min} {am_pm} ET"
+    
     if days_until == 0:
-        countdown = f"TODAY at {schedule['time']} CT"
+        countdown = f"TODAY at {time_str}"
     elif days_until == 1:
-        countdown = f"TOMORROW at {schedule['time']} CT"
+        countdown = f"TOMORROW at {time_str}"
     else:
-        countdown = f"In {days_until} days"
+        countdown = f"In {days_until} days at {time_str}"
     
     return next_draw_str, countdown
 
@@ -274,7 +300,7 @@ def get_last_draw_numbers(draws):
 def generate_newsletter_html(draws_by_lottery, jackpots):
     """Generate the full newsletter HTML matching lottery tracker styling."""
     now_utc = datetime.now(pytz.UTC)
-    ok_time = now_utc.astimezone(TIMEZONES['OK'])
+    ok_time = now_utc.astimezone(TIMEZONES['CT'])
     current_date = ok_time.strftime('%B %d, %Y')
     times_str = get_times_string()
     
@@ -709,7 +735,7 @@ def generate_newsletter_html(draws_by_lottery, jackpots):
         <div class="header">
             <h1>
                 <span class="heart-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#ff47bb"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg></span>
-                LOTTERY NEWS
+                Build Your Own Tickets
                 <span class="heart-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#ff47bb"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg></span>
             </h1>
             <p class="subtitle">Build Your Own Lucky Numbers with Data-Driven Pools</p>
@@ -739,32 +765,35 @@ def generate_newsletter_html(draws_by_lottery, jackpots):
         
         # Draw info
         next_draw, countdown = get_next_draw_info(lottery_key)
-        draw_days = ', '.join(schedule.get('days', []))
+        schedule_text = schedule.get('schedule_text', 'TBD')
         
-        # Jackpot info
-        cash = jp.get('cash_value', 0)
+        # Jackpot info - show jackpot, cash value, and after-tax (federal 24% + OK 4.75%)
         jackpot_html = ''
         
         if config.get('grand_prize'):
+            # L4L has fixed prize structure
+            fixed_cash = config.get('fixed_cash', 5_750_000)
+            after_tax = calculate_after_tax(fixed_cash, 'OK')
             jackpot_html = f'''
                 <div class="jackpot-section">
                     <div class="jackpot-amount">{config['grand_prize']}</div>
-                    <div class="jackpot-details">Top Prize</div>
+                    <div class="jackpot-details">
+                        <div><strong>Cash Option:</strong> {format_money(fixed_cash)}</div>
+                        <div><strong>After Taxes (24% Fed + 4.75% OK):</strong> {format_money(after_tax)}</div>
+                    </div>
                 </div>
 '''
-        elif cash and cash > 0:
-            ok_after = calculate_after_tax(cash, 'OK')
-            ca_after = calculate_after_tax(cash, 'CA')
-            ma_after = calculate_after_tax(cash, 'MA')
-            
-            jackpot_html = f'''
+        else:
+            jackpot_amt = jp.get('jackpot', 0)
+            cash = jp.get('cash_value', 0)
+            if jackpot_amt and jackpot_amt > 0:
+                after_tax = calculate_after_tax(cash, 'OK') if cash else 0
+                jackpot_html = f'''
                 <div class="jackpot-section">
-                    <div class="jackpot-amount">{format_money(jp.get('jackpot', cash))}</div>
+                    <div class="jackpot-amount">{format_money(jackpot_amt)}</div>
                     <div class="jackpot-details">
-                        <strong>After-Tax Cash:</strong><br>
-                        🌵 CA: {format_money(ca_after)} | 
-                        🍀 MA: {format_money(ma_after)} | 
-                        🤠 OK: {format_money(ok_after)}
+                        <div><strong>Cash Option:</strong> {format_money(cash) if cash else 'TBD'}</div>
+                        <div><strong>After Taxes (24% Fed + 4.75% OK):</strong> {format_money(after_tax) if after_tax else 'TBD'}</div>
                     </div>
                 </div>
 '''
@@ -778,7 +807,7 @@ def generate_newsletter_html(draws_by_lottery, jackpots):
                     <div class="lottery-header">
                         <span class="lottery-name">{config['emoji']} {config['name']}</span>
                     </div>
-                    <div class="draw-schedule">📆 Draws: {draw_days} at {schedule.get('time', 'TBD')} CT</div>
+                    <div class="draw-schedule">📆 Draws: {schedule_text} at {schedule.get('time', 'TBD')} CT</div>
                     <div class="countdown {countdown_class}">⏰ Next: {countdown or 'TBD'}</div>
                     {jackpot_html}
                     <div class="numbers-row">
@@ -941,7 +970,7 @@ def generate_newsletter_html(draws_by_lottery, jackpots):
 def generate_embed_snippet(draws_by_lottery, jackpots):
     """Generate simple embeddable HTML for Patreon/Substack."""
     now_utc = datetime.now(pytz.UTC)
-    ok_time = now_utc.astimezone(TIMEZONES['OK'])
+    ok_time = now_utc.astimezone(TIMEZONES['CT'])
     current_date = ok_time.strftime('%B %d, %Y')
     
     snippet = f'''<div style="font-family: Georgia, serif; max-width: 650px; margin: 0 auto; padding: 25px; background: linear-gradient(135deg, #fff0f5 0%, #f0f8ff 100%); border: 4px solid #ff47bb; border-radius: 20px;">
@@ -1026,7 +1055,7 @@ def main():
     full_html = generate_newsletter_html(draws_by_lottery, jackpots)
     
     now_utc = datetime.now(pytz.UTC)
-    ok_time = now_utc.astimezone(TIMEZONES['OK'])
+    ok_time = now_utc.astimezone(TIMEZONES['CT'])
     date_str = ok_time.strftime('%Y-%m-%d')
     
     # Save dated version
