@@ -26,9 +26,9 @@ OUTPUT_DIR = BASE_DIR / 'output'
 CONFIG = {
     'substack': {
         'enabled': True,
-        'method': 'email',  # Substack allows importing posts via email
-        'import_email': os.environ.get('SUBSTACK_IMPORT_EMAIL', ''),  # Your Substack import email
-        'description': 'Send newsletter HTML to Substack import email'
+        'method': 'email',  # Send directly to subscriber emails
+        'subscribers_file': 'subscribers.txt',  # One email per line
+        'description': 'Send newsletter directly to Substack subscriber emails'
     },
     'patreon': {
         'enabled': True,
@@ -51,6 +51,20 @@ CONFIG = {
         'sender_password': os.environ.get('GMAIL_PASSWORD', '')
     }
 }
+
+def load_subscribers():
+    """Load subscriber emails from file."""
+    subscribers_file = BASE_DIR / 'subscribers.txt'
+    if not subscribers_file.exists():
+        return []
+    
+    subscribers = []
+    with open(subscribers_file, 'r') as f:
+        for line in f:
+            email = line.strip()
+            if email and '@' in email and not email.startswith('#'):
+                subscribers.append(email)
+    return subscribers
 
 def load_newsletter_html():
     """Load the latest newsletter HTML."""
@@ -87,16 +101,17 @@ def send_email(to_addresses, subject, html_content, config):
         return False, f"Email error: {e}"
 
 def publish_to_substack():
-    """Publish to Substack via email import."""
-    print("\n📧 Publishing to Substack...")
+    """Send newsletter directly to subscriber emails."""
+    print("\n📧 Publishing to Subscribers...")
     
-    import_email = CONFIG['substack']['import_email']
-    if not import_email:
-        print("   ⚠️  SUBSTACK_IMPORT_EMAIL not set")
-        print("   📝 To enable Substack automation:")
-        print("      1. Go to Substack Dashboard > Settings > Importing")
-        print("      2. Get your unique import email address")
-        print("      3. Set SUBSTACK_IMPORT_EMAIL environment variable")
+    subscribers = load_subscribers()
+    if not subscribers:
+        print("   ⚠️  No subscribers found!")
+        print("   📝 To add subscribers:")
+        print("      1. Go to Substack > Subscribers > Export")
+        print("      2. Download CSV and copy email addresses")
+        print("      3. Paste emails into: subscribers.txt (one per line)")
+        print(f"      4. File location: {BASE_DIR / 'subscribers.txt'}")
         return False
     
     html = load_newsletter_html()
@@ -104,15 +119,23 @@ def publish_to_substack():
         print("   ❌ Newsletter HTML not found")
         return False
     
-    subject = f"🎰 Lottery Newsletter - {datetime.now().strftime('%B %d, %Y')}"
-    success, msg = send_email([import_email], subject, html, CONFIG['email'])
+    subject = f"🎰 Lottery Pool Picks - {datetime.now().strftime('%B %d, %Y')}"
     
-    if success:
-        print(f"   ✅ Sent to Substack import: {import_email}")
-    else:
-        print(f"   ❌ {msg}")
+    # Send to subscribers in batches to avoid spam limits
+    batch_size = 50
+    total_sent = 0
     
-    return success
+    for i in range(0, len(subscribers), batch_size):
+        batch = subscribers[i:i+batch_size]
+        success, msg = send_email(batch, subject, html, CONFIG['email'])
+        if success:
+            total_sent += len(batch)
+            print(f"   ✅ Sent batch {i//batch_size + 1}: {len(batch)} emails")
+        else:
+            print(f"   ❌ Batch {i//batch_size + 1} failed: {msg}")
+    
+    print(f"   📬 Total sent: {total_sent}/{len(subscribers)} subscribers")
+    return total_sent > 0
 
 def publish_to_patreon():
     """Publish to Patreon via API."""

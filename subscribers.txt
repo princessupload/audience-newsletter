@@ -1,0 +1,14 @@
+# Subscriber Email List
+# Add one email per line
+# Lines starting with # are ignored
+#
+# HOW TO GET YOUR SUBSTACK SUBSCRIBERS:
+# 1. Go to Substack Dashboard
+# 2. Click "Subscribers" in the left menu
+# 3. Click "Export" (top right)
+# 4. Open the CSV file
+# 5. Copy the email addresses and paste below
+#
+# Example:
+# subscriber1@example.com
+# subscriber2@gmail.com
