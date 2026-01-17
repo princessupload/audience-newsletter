@@ -472,19 +472,38 @@ def update_jackpots():
     
     jackpots = {}
     
-    # Powerball jackpot
+    # Powerball jackpot - Texas Lottery (same as tracker)
+    pb_found = False
     try:
-        content = fetch_url('https://www.valottery.com/data/draw-games/powerball')
+        content = fetch_url('https://www.texaslottery.com/export/sites/lottery/Games/Powerball/index.html')
         if content:
-            match = re.search(r'\$(\d+)\s*MILLION', content, re.IGNORECASE)
+            match = re.search(r'Est\.\s*(?:Annuitized\s*)?Jackpot[^$]*\$(\d+)\s*(Million|Billion)', content, re.IGNORECASE)
             if match:
                 amount = int(match.group(1))
-                cash_match = re.search(r'Cash\s*Value[:\s]*\$(\d+)', content, re.IGNORECASE)
+                if 'billion' in match.group(2).lower():
+                    amount *= 1000
+                cash_match = re.search(r'Cash\s*Value[^$]*\$(\d+)', content, re.IGNORECASE)
                 cash = int(cash_match.group(1)) * 1_000_000 if cash_match else int(amount * 450_000)
                 jackpots['pb'] = {'jackpot': amount * 1_000_000, 'cash_value': cash}
                 print(f"  ✅ PB: ${amount}M")
+                pb_found = True
     except Exception as e:
-        print(f"  ⚠️ PB jackpot error: {e}")
+        print(f"  ⚠️ PB Texas error: {e}")
+    
+    # PB fallback - powerball.com
+    if not pb_found:
+        try:
+            content = fetch_url('https://www.powerball.com/')
+            if content:
+                match = re.search(r'\$(\d+)\s*(Million|Billion)', content, re.IGNORECASE)
+                if match:
+                    amount = int(match.group(1))
+                    if 'billion' in match.group(2).lower():
+                        amount *= 1000
+                    jackpots['pb'] = {'jackpot': amount * 1_000_000, 'cash_value': int(amount * 450_000)}
+                    print(f"  ✅ PB: ${amount}M (fallback)")
+        except Exception as e:
+            print(f"  ⚠️ PB fallback error: {e}")
     
     # Mega Millions jackpot
     try:
