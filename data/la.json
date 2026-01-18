@@ -1,6 +1,17 @@
 {
   "draws": [
     {
+      "date": "2026-01-17",
+      "main": [
+        7,
+        28,
+        29,
+        35,
+        39
+      ],
+      "bonus": 8
+    },
+    {
       "date": "2026-01-14",
       "main": [
         1,
@@ -4742,7 +4753,6 @@
       "bonus": 4
     }
   ],
-  "synced_from": "C:\\Users\\Slytherin\\CascadeProjects\\windsurf-project-3\\lottery-tracker\\data\\la.json",
-  "synced_at": "2026-01-17T01:44:01.490900",
-  "total_draws": 431
+  "updated": "2026-01-18T15:22:01.876810",
+  "total_draws": 432
 }

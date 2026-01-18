@@ -418,6 +418,48 @@ def fetch_la_lotto_net():
         print(f"  ⚠️ LA lotto.net error: {e}")
         return None
 
+def fetch_la_lotteryusa():
+    """Source 4: LotteryUSA - WORKING! Uses c-ball class."""
+    try:
+        html = fetch_url("https://www.lotteryusa.com/lotto-america/")
+        if not html:
+            return None
+        
+        # LotteryUSA uses c-ball class for numbers
+        # Pattern: 5 main balls + 1 star ball, repeating for each draw
+        balls = re.findall(r'c-ball[^>]*>(\d+)<', html)
+        
+        if len(balls) >= 6:
+            # First 5 are main numbers, 6th is star ball
+            main = sorted([int(balls[i]) for i in range(5)])
+            bonus = int(balls[5])
+            
+            # Try to find date
+            date_match = re.search(r'(\w+day)[,\s]+(\w+)\s+(\d{1,2})[,\s]+(\d{4})', html)
+            if date_match:
+                month_map = {'January': '01', 'February': '02', 'March': '03', 'April': '04',
+                             'May': '05', 'June': '06', 'July': '07', 'August': '08',
+                             'September': '09', 'October': '10', 'November': '11', 'December': '12'}
+                month = month_map.get(date_match.group(2), '01')
+                day = date_match.group(3).zfill(2)
+                year = date_match.group(4)
+                date_str = f"{year}-{month}-{day}"
+            else:
+                # Calculate most recent LA draw day
+                now = datetime.now()
+                for offset in range(7):
+                    check = now - timedelta(days=offset)
+                    if check.weekday() in [0, 2, 5]:  # Mon, Wed, Sat
+                        date_str = check.strftime("%Y-%m-%d")
+                        break
+            
+            print(f"  ✅ LotteryUSA LA: {main} + Star {bonus} ({date_str})")
+            return {'date': date_str, 'main': main, 'bonus': bonus}
+        return None
+    except Exception as e:
+        print(f"  ⚠️ LA LotteryUSA error: {e}")
+        return None
+
 # ============================================================
 # Main Update Functions
 # ============================================================
@@ -519,17 +561,35 @@ def update_jackpots():
     except Exception as e:
         print(f"  ⚠️ MM jackpot error: {e}")
     
-    # Lotto America jackpot
+    # Lotto America jackpot - try lotteryusa first (works!)
+    la_found = False
     try:
-        content = fetch_url('https://www.powerball.com/lotto-america')
+        content = fetch_url('https://www.lotteryusa.com/lotto-america/')
         if content:
-            match = re.search(r'\$([\d.]+)\s*M', content)
+            # Look for jackpot amount - usually in format "$X Million" or "$X.XX Million"
+            match = re.search(r'\$\s*([\d,.]+)\s*Million', content, re.IGNORECASE)
             if match:
-                amount = float(match.group(1))
+                amount_str = match.group(1).replace(',', '')
+                amount = float(amount_str)
                 jackpots['la'] = {'jackpot': int(amount * 1_000_000), 'cash_value': int(amount * 450_000)}
-                print(f"  ✅ LA: ${amount}M")
+                print(f"  ✅ LA: ${amount}M (lotteryusa)")
+                la_found = True
     except Exception as e:
-        print(f"  ⚠️ LA jackpot error: {e}")
+        print(f"  ⚠️ LA lotteryusa jackpot error: {e}")
+    
+    # LA jackpot fallback - powerball.com/lotto-america
+    if not la_found:
+        try:
+            content = fetch_url('https://www.powerball.com/lotto-america')
+            if content:
+                match = re.search(r'\$([\d.]+)\s*M', content)
+                if match:
+                    amount = float(match.group(1))
+                    jackpots['la'] = {'jackpot': int(amount * 1_000_000), 'cash_value': int(amount * 450_000)}
+                    print(f"  ✅ LA: ${amount}M (powerball.com)")
+                    la_found = True
+        except Exception as e:
+            print(f"  ⚠️ LA powerball jackpot error: {e}")
     
     # Set defaults for any missing
     if 'pb' not in jackpots:
@@ -566,7 +626,7 @@ def main():
     update_lottery('l4l', [fetch_l4l_ct_rss, fetch_l4l_lotto_net])
     update_lottery('pb', [fetch_pb_ny_api, fetch_pb_ct_rss, fetch_pb_iowa])
     update_lottery('mm', [fetch_mm_ny_api, fetch_mm_iowa])
-    update_lottery('la', [fetch_la_oklahoma, fetch_la_iowa, fetch_la_lottoamerica, fetch_la_lotto_net])
+    update_lottery('la', [fetch_la_lotteryusa, fetch_la_oklahoma, fetch_la_iowa, fetch_la_lottoamerica, fetch_la_lotto_net])
     
     # Update jackpots
     update_jackpots()
