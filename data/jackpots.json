@@ -1,25 +1,15 @@
 {
   "pb": {
-<<<<<<< HEAD
-    "jackpot": 193000000,
-    "cash_value": 87000000
-=======
     "jackpot": 209000000,
     "cash_value": 95000000
->>>>>>> 34a2fabe2cb636e701be76cc9a4c83a6d08c0909
   },
   "mm": {
-    "jackpot": 250000000,
-    "cash_value": 113000000
+    "jackpot": 266000000,
+    "cash_value": 120000000
   },
   "la": {
-<<<<<<< HEAD
-    "jackpot": 13090000,
-    "cash_value": 5890500
-=======
     "jackpot": 13300000,
     "cash_value": 5985000
->>>>>>> 34a2fabe2cb636e701be76cc9a4c83a6d08c0909
   },
   "l4l": {
     "jackpot": 7000000,
