@@ -129,11 +129,16 @@ def inject_unsubscribe_link(html, email):
     
     html = html.replace(old_unsub, new_unsub)
     
-    # Also add unsubscribe header-compatible link at bottom
+    # Also add newsletter link and unsubscribe at bottom
     if '</body>' in html:
         footer = f'''
-        <div style="text-align: center; padding: 20px; font-size: 12px; color: #999;">
-            <a href="{unsub_link}" style="color: #999;">Unsubscribe</a> from this newsletter
+        <div style="text-align: center; padding: 20px; font-size: 12px; color: #666; background: linear-gradient(135deg, #fff0f5, #f0f8ff); border-top: 2px solid #ff47bb; margin-top: 20px;">
+            <p style="margin: 0 0 10px 0;">
+                <a href="https://www.princessupload.net/lottery-newsletter.html" style="color: #ff47bb; font-weight: bold; text-decoration: none;">📰 View Full Newsletter Online</a>
+            </p>
+            <p style="margin: 0;">
+                <a href="{unsub_link}" style="color: #999;">Unsubscribe</a> from this newsletter
+            </p>
         </div>
         </body>'''
         html = html.replace('</body>', footer)
