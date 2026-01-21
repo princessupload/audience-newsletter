@@ -94,7 +94,7 @@ LOTTERY_CONFIG = {
         'main_count': 5,
         'strategy': 'HOLD_REVIEW',
         'strategy_desc': 'Pick once, review every ~2 years',
-        'optimal_window': 300,  # Walk-forward tested - 300 is best for PB
+        'optimal_window': 100,  # Walk-forward tested - 100 is best for PB (patterns shift fast)
         'pattern_stability': 46.7,
         'best_methods': ['Position Frequency (2.46× validated)', 'Constraint Filter'],
         'grand_prize': None,
