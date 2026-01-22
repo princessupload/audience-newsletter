@@ -97,7 +97,7 @@ LOTTERY_CONFIG = {
         'strategy': 'HOLD_REVIEW',
         'strategy_desc': 'Pick once, review every ~2 years',
         'hold_window': 100,  # PB: 100-draw window for stable HOLD
-        'next_play_window': 22,  # 22-draw window for momentum-based NEXT PLAY
+        'next_play_window': 35,  # 35-draw window for momentum-based NEXT PLAY (tested best)
         'pattern_stability': 46.7,
         'best_methods': ['Position Frequency (2.46× validated)', 'Constraint Filter'],
         'grand_prize': None,
@@ -121,7 +121,7 @@ LOTTERY_CONFIG = {
         'strategy': 'HOLD',  # HOLD still better even with limited data!
         'strategy_desc': 'Pick once, play FOREVER (HOLD still best)',
         'hold_window': 100,  # MM: 100-draw window for HOLD (or all if <100)
-        'next_play_window': 22,  # 22-draw window for momentum-based NEXT PLAY
+        'next_play_window': 35,  # 35-draw window for momentum-based NEXT PLAY (tested best)
         'pattern_stability': None,
         'best_methods': ['Position Frequency (~2.5× estimated)', 'Limited data - use HOLD anyway'],
         'grand_prize': None,
