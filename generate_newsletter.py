@@ -47,7 +47,8 @@ LOTTERY_CONFIG = {
         'main_count': 5,
         'strategy': 'HOLD',
         'strategy_desc': 'Pick once, play FOREVER',
-        'optimal_window': 200,  # Optimized via walk-forward testing
+        'hold_window': None,  # None = all draws for HOLD
+        'next_play_window': 200,  # Optimized via walk-forward testing
         'pattern_stability': 68.9,
         'best_methods': ['Position Frequency (2.57× validated)', 'Constraint Filter (87% pass)'],
         'grand_prize': '$7K/Week for Life',
@@ -71,7 +72,8 @@ LOTTERY_CONFIG = {
         'main_count': 5,
         'strategy': 'HOLD',
         'strategy_desc': 'Pick once, play FOREVER',
-        'optimal_window': 200,  # Optimized via walk-forward testing
+        'hold_window': None,  # None = all draws for HOLD
+        'next_play_window': 200,  # Optimized via walk-forward testing
         'pattern_stability': 60.0,
         'best_methods': ['Position Frequency (2.62× validated)', 'Constraint Filter (86% pass)'],
         'grand_prize': None,
@@ -94,7 +96,8 @@ LOTTERY_CONFIG = {
         'main_count': 5,
         'strategy': 'HOLD_REVIEW',
         'strategy_desc': 'Pick once, review every ~2 years',
-        'optimal_window': 100,  # Walk-forward tested - 100 is best for PB (patterns shift fast)
+        'hold_window': 100,  # PB: 100-draw window for stable HOLD
+        'next_play_window': 22,  # 22-draw window for momentum-based NEXT PLAY
         'pattern_stability': 46.7,
         'best_methods': ['Position Frequency (2.46× validated)', 'Constraint Filter'],
         'grand_prize': None,
@@ -115,9 +118,10 @@ LOTTERY_CONFIG = {
         'main_range': (1, 70),
         'bonus_range': (1, 25),
         'main_count': 5,
-        'strategy': 'HOLD',  # Changed from NEXT_DRAW - HOLD still better even with limited data!
+        'strategy': 'HOLD',  # HOLD still better even with limited data!
         'strategy_desc': 'Pick once, play FOREVER (HOLD still best)',
-        'optimal_window': 81,  # Use ALL data for MM (limited draws)
+        'hold_window': 100,  # MM: 100-draw window for HOLD (or all if <100)
+        'next_play_window': 22,  # 22-draw window for momentum-based NEXT PLAY
         'pattern_stability': None,
         'best_methods': ['Position Frequency (~2.5× estimated)', 'Limited data - use HOLD anyway'],
         'grand_prize': None,
