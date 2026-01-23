@@ -50,7 +50,7 @@ LOTTERY_CONFIG = {
         'hold_window': None,  # None = all draws for HOLD
         'next_play_window': 200,  # Optimized via walk-forward testing
         'pattern_stability': 68.9,
-        'best_methods': ['Position Frequency (~2× validated)', 'Constraint Filter (87% pass)'],
+        'best_methods': ['Position Frequency (Jackpot: 4.1×, Partial: ~1.5×)', 'Constraint Filter (87% pass)'],
         'grand_prize': '$1K/Day for Life',
         'fixed_cash': 5_750_000,
         'jackpot_odds': '1 in 30,821,472',
@@ -78,7 +78,7 @@ LOTTERY_CONFIG = {
         'hold_window': None,  # None = all draws for HOLD
         'next_play_window': 200,  # Optimized via walk-forward testing
         'pattern_stability': 60.0,
-        'best_methods': ['Position Frequency (~2× validated)', 'Constraint Filter (86% pass)'],
+        'best_methods': ['Position Frequency (Jackpot: 7.7×, Partial: ~1.2×)', 'Constraint Filter (86% pass)'],
         'grand_prize': '$2M+ Jackpot',
         'jackpot_odds': '1 in 25,989,600',
         'any_prize_odds': '1 in 9.6 (10.4%)',
@@ -105,7 +105,7 @@ LOTTERY_CONFIG = {
         'hold_window': 100,  # PB: 100-draw window for stable HOLD
         'next_play_window': 35,  # 35-draw window for momentum-based NEXT PLAY (tested best)
         'pattern_stability': 46.7,
-        'best_methods': ['Position Frequency (~1.5× validated)', 'Constraint Filter'],
+        'best_methods': ['Position Frequency (Jackpot: 11.2×, Partial: ~1.0×)', 'Constraint Filter'],
         'grand_prize': 'Varies ($20M+)',
         'jackpot_odds': '1 in 292,201,338',
         'any_prize_odds': '1 in 24.9 (4.0%)',
@@ -132,7 +132,7 @@ LOTTERY_CONFIG = {
         'hold_window': 100,  # MM: 100-draw window for HOLD (or all if <100)
         'next_play_window': 35,  # 35-draw window for momentum-based NEXT PLAY (tested best)
         'pattern_stability': None,
-        'best_methods': ['Position Frequency (~1.3× estimated)', 'Limited data - use HOLD anyway'],
+        'best_methods': ['Position Frequency (Jackpot: ~65× unreliable)', 'Limited data (83 draws)'],
         'grand_prize': 'Varies ($20M+)',
         'jackpot_odds': '1 in 302,575,350',
         'any_prize_odds': '1 in 24 (4.2%)',
