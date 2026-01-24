@@ -23,7 +23,7 @@ jobs:
           python-version: '3.11'
       
       - name: Install dependencies
-        run: pip install pytz
+        run: pip install pytz paramiko
       
       - name: Update lottery data
         run: python update_data.py
@@ -46,3 +46,9 @@ jobs:
           git add -A
           git diff --staged --quiet || git commit -m "Newsletter sent: $(date +'%Y-%m-%d')"
           git push || true
+
+      - name: Upload latest.html to website
+        if: ${{ secrets.SFTP_PASSWORD != '' }}
+        env:
+          SFTP_PASSWORD: ${{ secrets.SFTP_PASSWORD }}
+        run: python upload_to_wordpress.py
