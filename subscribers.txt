@@ -13,6 +13,8 @@
 # subscriber1@example.com
 # subscriber2@gmail.com
 
-# Test subscribers for verification
+# Personal subscribers (4 recipients)
 sarasinead@aol.com
+marysineadart@gmail.com
 princessuploadie@gmail.com
+rick@gamingdatasystems.com
